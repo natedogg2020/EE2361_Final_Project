@@ -5,8 +5,24 @@
  * Created on November 12, 2020, 11:07 PM
  */
 
-
+/*
+ * TODO:
+ *  1.  Could incorporate interrupt to find faults in stepping
+ *  2.  Complete full_Step function
+ *  3.  Figure out what wiring we should use (Hai do you have a preferred wiring?)
+ *      I was thinking we could use RB15 and go down to RB12 or however far we
+ *      need for out outputs to the DRV8825. Then RA0 and up could be used for
+ *      outputs coming from the DRV8825 to be read. 
+ * 
+ *      If this doesn't sound good, I'd like to collaborate on this.
+ * 
+ *  4.  Feel free to add/remove things from this list. If this is helpful to have,
+ *      I could make a TODO/Completed/Review google doc for us to collaborate
+ *      more effectively if you'd be open to it.
+ *   
+ */
 #include "xc.h"
+//#include "DRV8825_main_v001.h"
 
 // CW1: FLASH CONFIGURATION WORD 1 (see PIC24 Family Reference Manual 24.1)
 #pragma config ICS = PGx1          // Comm Channel Select (Emulator EMUC1/EMUD1 pins are shared with PGC1/PGD1)
@@ -25,11 +41,33 @@
 #pragma config FNOSC = FRCPLL      // Oscillator Select (Fast RC Oscillator with PLL module (FRCPLL))
 
 void setup(void){
-    
+    CLKDIVbits.RCDIV = 0;  //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
 }
+
 void full_Step(char dir, int steps){
     
 }
+
+void half_Step(char dir, int steps){
+    
+}
+
+void quarter_Step(char dir, int steps){
+    
+}
+
+void eighth_Step(char dir, int steps){
+    
+}
+
+void sixteenth_Step(char dir, int steps){
+    
+}
+
+void fancy_Step(char dir, int steps, int accel, int decel){
+    
+}
+
 int main(void) {
     setup();
     
