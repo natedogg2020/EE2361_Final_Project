@@ -66,9 +66,9 @@ Default Scalar Model: Small
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200                0xce           0x135  (309)
-.text                        0x2ce                0x54            0x7e  (126)
+.text                        0x2ce                0x94            0xde  (222)
 
-                 Total "program" memory used (bytes):          0x1b3  (435) <1%
+                 Total "program" memory used (bytes):          0x213  (531) <1%
 
 
 "data" Memory  [Origin = 0x800, Length = 0x2000]
@@ -99,13 +99,14 @@ External Symbols in Program Memory (by address):
                   0x000252                  __data_init_standard
                   0x0002c8                  __DefaultInterrupt
                   0x0002ce                  _setup
-                  0x0002dc                  _full_Step
-                  0x0002e6                  _half_Step
-                  0x0002f0                  _quarter_Step
-                  0x0002fa                  _eighth_Step
-                  0x000304                  _sixteenth_Step
-                  0x00030e                  _fancy_Step
-                  0x00031c                  _main
+                  0x0002f4                  _msecs
+                  0x00031c                  _full_Step
+                  0x000326                  _half_Step
+                  0x000330                  _quarter_Step
+                  0x00033a                  _eighth_Step
+                  0x000344                  _sixteenth_Step
+                  0x00034e                  _fancy_Step
+                  0x00035c                  _main
 
 External Symbols in Program Memory (by name):
 
@@ -114,14 +115,15 @@ External Symbols in Program Memory (by name):
                   0x000252                  __data_init_standard
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
-                  0x0002fa                  _eighth_Step
-                  0x00030e                  _fancy_Step
-                  0x0002dc                  _full_Step
-                  0x0002e6                  _half_Step
-                  0x00031c                  _main
-                  0x0002f0                  _quarter_Step
+                  0x00033a                  _eighth_Step
+                  0x00034e                  _fancy_Step
+                  0x00031c                  _full_Step
+                  0x000326                  _half_Step
+                  0x00035c                  _main
+                  0x0002f4                  _msecs
+                  0x000330                  _quarter_Step
                   0x0002ce                  _setup
-                  0x000304                  _sixteenth_Step
+                  0x000344                  _sixteenth_Step
 
 Memory Configuration
 
@@ -194,28 +196,28 @@ __CONFIG1
 .comment
  *(.comment)
 
-.debug_info       0x000000        0x448
+.debug_info       0x000000        0x87c
  *(.debug_info)
- .debug_info      0x000000        0x448 build/default/production/Final_Project_main_v001.o
+ .debug_info      0x000000        0x87c build/default/production/Final_Project_main_v001.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x101
+.debug_abbrev     0x000000        0x156
  *(.debug_abbrev)
  .debug_abbrev    0x000000          0x1 build/default/production/DRV8825_main_v001.o
- .debug_abbrev    0x000001        0x100 build/default/production/Final_Project_main_v001.o
+ .debug_abbrev    0x000001        0x155 build/default/production/Final_Project_main_v001.o
 
-.debug_line       0x000000        0x146
+.debug_line       0x000000        0x155
  *(.debug_line)
  .debug_line      0x000000         0x1a build/default/production/DRV8825_main_v001.o
- .debug_line      0x00001a        0x12c build/default/production/Final_Project_main_v001.o
+ .debug_line      0x00001a        0x13b build/default/production/Final_Project_main_v001.o
 
-.debug_frame      0x000000         0xe4
+.debug_frame      0x000000         0xfe
  *(.debug_frame)
- .debug_frame     0x000000         0xe4 build/default/production/Final_Project_main_v001.o
+ .debug_frame     0x000000         0xfe build/default/production/Final_Project_main_v001.o
 
-.debug_str        0x000000         0x11
+.debug_str        0x000000         0x2d
  *(.debug_str)
- .debug_str       0x000000         0x11 build/default/production/Final_Project_main_v001.o
+ .debug_str       0x000000         0x2d build/default/production/Final_Project_main_v001.o
 
 .debug_loc
  *(.debug_loc)
@@ -224,10 +226,10 @@ __CONFIG1
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000         0x84
+                  0x000000         0x8e
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0x84 build/default/production/Final_Project_main_v001.o
+                  0x000000         0x8e build/default/production/Final_Project_main_v001.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -832,9 +834,9 @@ __c30_signature
                   0x00002a          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data_init_standard.o)
 
 .debug_pubtypes
-                  0x000030         0x40
+                  0x000030         0x99
  .debug_pubtypes
-                  0x000030         0x40 build/default/production/Final_Project_main_v001.o
+                  0x000030         0x99 build/default/production/Final_Project_main_v001.o
 
 .config_JTAGEN    0x00abfe          0x2
  .config_JTAGEN
@@ -843,13 +845,14 @@ __c30_signature
 .config_IESO      0x00abfc          0x2
  .config_IESO     0x00abfc          0x2 build/default/production/Final_Project_main_v001.o
 
-.text             0x0002ce         0x54
- .text            0x0002ce         0x54 build/default/production/Final_Project_main_v001.o
+.text             0x0002ce         0x94
+ .text            0x0002ce         0x94 build/default/production/Final_Project_main_v001.o
                   0x0002ce                  _setup
-                  0x0002dc                  _full_Step
-                  0x0002e6                  _half_Step
-                  0x0002f0                  _quarter_Step
-                  0x0002fa                  _eighth_Step
-                  0x000304                  _sixteenth_Step
-                  0x00030e                  _fancy_Step
-                  0x00031c                  _main
+                  0x0002f4                  _msecs
+                  0x00031c                  _full_Step
+                  0x000326                  _half_Step
+                  0x000330                  _quarter_Step
+                  0x00033a                  _eighth_Step
+                  0x000344                  _sixteenth_Step
+                  0x00034e                  _fancy_Step
+                  0x00035c                  _main

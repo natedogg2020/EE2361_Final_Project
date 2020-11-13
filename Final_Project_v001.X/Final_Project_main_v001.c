@@ -42,6 +42,27 @@
 
 void setup(void){
     CLKDIVbits.RCDIV = 0;  //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
+    // Setup T1 for 1 milli-second delay
+    T1CON = 0x00; //Stops the Timer1 and reset control reg.
+    TMR1 = 0x00; //Clear contents of the timer register
+    PR1 = 249 ; //Set period to reset after 249
+    T1CONbits.TCKPS = 0b10; //Set prescale to 1:64
+    IFS0bits.T1IF = 0; //Clear the T1 interrupt flag
+    IEC0bits.T1IE = 0; //Disable T1 interrupts
+    T1CONbits.TON = 1; //Start T1 
+    
+    
+}
+
+void msecs(int n)
+{
+    TMR1 = 0x00; //Clear T1 register
+    _T1IF = 0; //Clear the T1 interrupt flag
+    int i; 
+    for(i=0; i<n; i++){
+        while (!_T1IF); //Wait for TMR1 to overflow
+        _T1IF=0; 
+    }
 }
 
 void full_Step(char dir, int steps){
