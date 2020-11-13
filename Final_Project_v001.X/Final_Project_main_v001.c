@@ -6,14 +6,21 @@
  */
 
 /*
+
+
  * TODO:
  *  1.  Could incorporate interrupt to find faults in stepping
  *  2.  Complete full_Step function
  *  3.  Figure out what wiring we should use (Hai do you have a preferred wiring?)
+
  *      I was thinking we could use RB15 and go down to RB12 or however far we
  *      need for out outputs to the DRV8825. Then RA0 and up could be used for
  *      outputs coming from the DRV8825 to be read. 
- * 
+ 
+ We can use any wiring, I tried with RB8 and output compare mode and the motor works. 
+ we can also use others way
+  
+ 
  *      If this doesn't sound good, I'd like to collaborate on this.
  * 
  *  4.  Feel free to add/remove things from this list. If this is helpful to have,
