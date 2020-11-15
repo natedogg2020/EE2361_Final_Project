@@ -65,10 +65,10 @@ Default Scalar Model: Small
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x200                0xce           0x135  (309)
-.text                        0x2ce                0x94            0xde  (222)
+.text                        0x200                0xd2           0x13b  (315)
+.text                        0x2d2               0x210           0x318  (792)
 
-                 Total "program" memory used (bytes):          0x213  (531) <1%
+                 Total "program" memory used (bytes):          0x453  (1107) 1%
 
 
 "data" Memory  [Origin = 0x800, Length = 0x2000]
@@ -95,35 +95,41 @@ External Symbols in Program Memory (by address):
 
                   0x000200                  __resetPRI
                   0x00023c                  __psv_init
-                  0x000252                  __data_init
                   0x000252                  __data_init_standard
-                  0x0002c8                  __DefaultInterrupt
-                  0x0002ce                  _setup
-                  0x0002f4                  _msecs
-                  0x00031c                  _full_Step
-                  0x000326                  _half_Step
-                  0x000330                  _quarter_Step
-                  0x00033a                  _eighth_Step
-                  0x000344                  _sixteenth_Step
-                  0x00034e                  _fancy_Step
-                  0x00035c                  _main
+                  0x000252                  __data_init
+                  0x0002cc                  __DefaultInterrupt
+                  0x0002d2                  _setup
+                  0x000304                  _msecs
+                  0x00032c                  _setMode
+                  0x000380                  _full_Step
+                  0x0003ae                  _half_Step
+                  0x0003b8                  _quarter_Step
+                  0x0003e6                  _eighth_Step
+                  0x0003f0                  _sixteenth_Step
+                  0x00041e                  _thirtieth_Step
+                  0x00044c                  _fancy_Step
+                  0x00045a                  _delay_us
+                  0x00047c                  _main
 
 External Symbols in Program Memory (by name):
 
-                  0x0002c8                  __DefaultInterrupt
+                  0x0002cc                  __DefaultInterrupt
                   0x000252                  __data_init
                   0x000252                  __data_init_standard
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
-                  0x00033a                  _eighth_Step
-                  0x00034e                  _fancy_Step
-                  0x00031c                  _full_Step
-                  0x000326                  _half_Step
-                  0x00035c                  _main
-                  0x0002f4                  _msecs
-                  0x000330                  _quarter_Step
-                  0x0002ce                  _setup
-                  0x000344                  _sixteenth_Step
+                  0x00045a                  _delay_us
+                  0x0003e6                  _eighth_Step
+                  0x00044c                  _fancy_Step
+                  0x000380                  _full_Step
+                  0x0003ae                  _half_Step
+                  0x00047c                  _main
+                  0x000304                  _msecs
+                  0x0003b8                  _quarter_Step
+                  0x00032c                  _setMode
+                  0x0002d2                  _setup
+                  0x0003f0                  _sixteenth_Step
+                  0x00041e                  _thirtieth_Step
 
 Memory Configuration
 
@@ -161,7 +167,7 @@ LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000200         0xce
+.text             0x000200         0xd2
  *(.init)
  .init            0x000200         0x4c c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_standard.o)
                   0x000200                  __resetPRI
@@ -173,16 +179,16 @@ LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
  *(.user_init)
  *(.handle)
  *(.isr*)
- .isr             0x0002c8          0x4 default_isr
-                  0x0002c8                  __DefaultInterrupt
+ .isr             0x0002cc          0x4 default_isr
+                  0x0002cc                  __DefaultInterrupt
  *(.libc)
  *(.libm)
  *(.libdsp)
  *(.lib*)
  .libpic30_crt_start_mode
-                  0x0002cc          0x2 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt_start_mode_normal.Leo)
-                  0x0002cc                  __crt_start_mode
-                  0x0002cc                  __crt_start_mode_normal
+                  0x0002d0          0x2 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt_start_mode_normal.Leo)
+                  0x0002d0                  __crt_start_mode
+                  0x0002d0                  __crt_start_mode_normal
 
 usercode
  *(usercode)
@@ -196,28 +202,28 @@ __CONFIG1
 .comment
  *(.comment)
 
-.debug_info       0x000000        0x87c
+.debug_info       0x000000        0xb84
  *(.debug_info)
- .debug_info      0x000000        0x87c build/default/production/Final_Project_main_v001.o
+ .debug_info      0x000000        0xb84 build/default/production/Final_Project_main_v001.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x156
+.debug_abbrev     0x000000        0x18e
  *(.debug_abbrev)
  .debug_abbrev    0x000000          0x1 build/default/production/DRV8825_main_v001.o
- .debug_abbrev    0x000001        0x155 build/default/production/Final_Project_main_v001.o
+ .debug_abbrev    0x000001        0x18d build/default/production/Final_Project_main_v001.o
 
-.debug_line       0x000000        0x155
+.debug_line       0x000000        0x1a4
  *(.debug_line)
  .debug_line      0x000000         0x1a build/default/production/DRV8825_main_v001.o
- .debug_line      0x00001a        0x13b build/default/production/Final_Project_main_v001.o
+ .debug_line      0x00001a        0x18a build/default/production/Final_Project_main_v001.o
 
-.debug_frame      0x000000         0xfe
+.debug_frame      0x000000        0x14c
  *(.debug_frame)
- .debug_frame     0x000000         0xfe build/default/production/Final_Project_main_v001.o
+ .debug_frame     0x000000        0x14c build/default/production/Final_Project_main_v001.o
 
-.debug_str        0x000000         0x2d
+.debug_str        0x000000         0x46
  *(.debug_str)
- .debug_str       0x000000         0x2d build/default/production/Final_Project_main_v001.o
+ .debug_str       0x000000         0x46 build/default/production/Final_Project_main_v001.o
 
 .debug_loc
  *(.debug_loc)
@@ -226,10 +232,10 @@ __CONFIG1
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000         0x8e
+                  0x000000         0xba
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0x8e build/default/production/Final_Project_main_v001.o
+                  0x000000         0xba build/default/production/Final_Project_main_v001.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -820,6 +826,7 @@ LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libm-elf.a
 LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-c-elf.a
 END GROUP
 OUTPUT(dist/default/production/Final_Project_v001.X.production.elf elf32-pic30)
+LOAD jump_table
 LOAD default_isr
 
 __c30_signature
@@ -834,9 +841,9 @@ __c30_signature
                   0x00002a          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data_init_standard.o)
 
 .debug_pubtypes
-                  0x000030         0x99
+                  0x000030         0xb8
  .debug_pubtypes
-                  0x000030         0x99 build/default/production/Final_Project_main_v001.o
+                  0x000030         0xb8 build/default/production/Final_Project_main_v001.o
 
 .config_JTAGEN    0x00abfe          0x2
  .config_JTAGEN
@@ -845,14 +852,17 @@ __c30_signature
 .config_IESO      0x00abfc          0x2
  .config_IESO     0x00abfc          0x2 build/default/production/Final_Project_main_v001.o
 
-.text             0x0002ce         0x94
- .text            0x0002ce         0x94 build/default/production/Final_Project_main_v001.o
-                  0x0002ce                  _setup
-                  0x0002f4                  _msecs
-                  0x00031c                  _full_Step
-                  0x000326                  _half_Step
-                  0x000330                  _quarter_Step
-                  0x00033a                  _eighth_Step
-                  0x000344                  _sixteenth_Step
-                  0x00034e                  _fancy_Step
-                  0x00035c                  _main
+.text             0x0002d2        0x210
+ .text            0x0002d2        0x210 build/default/production/Final_Project_main_v001.o
+                  0x0002d2                  _setup
+                  0x000304                  _msecs
+                  0x00032c                  _setMode
+                  0x000380                  _full_Step
+                  0x0003ae                  _half_Step
+                  0x0003b8                  _quarter_Step
+                  0x0003e6                  _eighth_Step
+                  0x0003f0                  _sixteenth_Step
+                  0x00041e                  _thirtieth_Step
+                  0x00044c                  _fancy_Step
+                  0x00045a                  _delay_us
+                  0x00047c                  _main

@@ -6,14 +6,21 @@
  */
 
 /*
+
+
  * TODO:
  *  1.  Could incorporate interrupt to find faults in stepping
  *  2.  Complete full_Step function
  *  3.  Figure out what wiring we should use (Hai do you have a preferred wiring?)
+
  *      I was thinking we could use RB15 and go down to RB12 or however far we
  *      need for out outputs to the DRV8825. Then RA0 and up could be used for
  *      outputs coming from the DRV8825 to be read. 
- * 
+ 
+ We can use any wiring, I tried with RB8 and output compare mode and the motor works. 
+ we can also use others way
+  
+ 
  *      If this doesn't sound good, I'd like to collaborate on this.
  * 
  *  4.  Feel free to add/remove things from this list. If this is helpful to have,
@@ -22,6 +29,7 @@
  *   
  */
 #include "xc.h"
+
 //#include "DRV8825_main_v001.h"
 
 // CW1: FLASH CONFIGURATION WORD 1 (see PIC24 Family Reference Manual 24.1)
@@ -40,8 +48,12 @@
                                        // Fail-Safe Clock Monitor is enabled)
 #pragma config FNOSC = FRCPLL      // Oscillator Select (Fast RC Oscillator with PLL module (FRCPLL))
 
+#pragma config POSCMOD = NONE
+
+
 void setup(void){
     CLKDIVbits.RCDIV = 0;  //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
+    AD1PCFG = 0x9fff;            //sets all pins to digital I/O
     // Setup T1 for 1 milli-second delay
     T1CON = 0x00; //Stops the Timer1 and reset control reg.
     TMR1 = 0x00; //Clear contents of the timer register
@@ -51,7 +63,12 @@ void setup(void){
     IEC0bits.T1IE = 0; //Disable T1 interrupts
     T1CONbits.TON = 1; //Start T1 
     
-    
+    //DRV8825 Initializations
+//    TRISA = 0b0000000000011111;  //set port A to inputs, 
+    TRISB = 0b0000000000000011;  //and port B to outputs
+//    LATA = 0xffff;               //Set all of port A to HIGH
+    LATB = 0xffff;               //and all of port B to HIGH
+    //RB15 is DIR (Direction) pin, RB14 is STEP pin
 }
 
 void msecs(int n)
@@ -65,35 +82,118 @@ void msecs(int n)
     }
 }
 
-void full_Step(char dir, int steps){
-    
+void setMode(unsigned char mode){
+    if(mode <8 ){   //Actually good mode number
+        _RB13 = mode >>2;       //Plugged into M2
+        _RB12 = (mode >>1)%2;   //Plugged into M1
+        _RB11 = mode%2;         //Plugged into M0
+    }
+}
+
+void full_Step(int steps, int delay){
+    setMode(0);
+    int i = 0;
+     while(i<steps){
+         _RB14 = 1;
+         delay_us(delay);
+         _RB14 = 0;
+         delay_us(delay);
+         i++;
+     } 
+
 }
 
 void half_Step(char dir, int steps){
     
 }
 
-void quarter_Step(char dir, int steps){
-    
+void quarter_Step(int steps, int delay){
+    setMode(2);
+    int i = 0;
+     while(i<steps){
+         _RB14 = 1;
+         delay_us(delay);
+         _RB14 = 0;
+         delay_us(delay);
+         i++;
+     } 
 }
 
 void eighth_Step(char dir, int steps){
     
 }
 
-void sixteenth_Step(char dir, int steps){
-    
+void sixteenth_Step(int steps, int delay){
+    setMode(4);
+    int i = 0;
+     while(i<steps){
+         _RB14 = 1;
+         delay_us(delay);
+         _RB14 = 0;
+         delay_us(delay);
+         i++;
+     } 
+}
+
+void thirtieth_Step(int steps, int delay){
+    setMode(5);
+    int i = 0;
+     while(i<steps){
+         _RB14 = 1;
+         delay_us(delay);
+         _RB14 = 0;
+         delay_us(delay);
+         i++;
+     } 
 }
 
 void fancy_Step(char dir, int steps, int accel, int decel){
     
 }
 
+//Adds an additional 1.25us to the delay
+void delay_us(unsigned int us){
+    while(us-- >0){
+        asm("repeat #3");
+        asm("nop");
+        asm("nop");
+    }
+}
+
 int main(void) {
     setup();
+    int dir = 0;
+//    _RB15 = dir;
+    msecs(50);
+    delay_us(1);
+    delay_us(2);
+    delay_us(5);
+    delay_us(10);
+    delay_us(50000);
     
+    msecs(10);
     while(1){
         
+        _RB15 = !_RB15;
+         msecs(50);
+//        full_Step(5, 5000);
+//        full_Step(10, 2500);
+//        full_Step(15, 1000);
+//        full_Step(20, 500);
+//        full_Step(10000, 500);
+//        full_Step(15, 1000);
+//        full_Step(10, 2500);
+//        full_Step(5, 5000);
+//        msecs(500);
+        full_Step(200, 5000);
+        msecs(500);
+        quarter_Step(4 *200, 2500);
+        msecs(500);
+        sixteenth_Step(16 *200, 800);
+        msecs(500);
+        thirtieth_Step(32 *200, 300);
+        msecs(500);
+       
     }
     return 0;
 }
