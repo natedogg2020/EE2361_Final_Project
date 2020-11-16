@@ -103,8 +103,16 @@ void full_Step(int steps, int delay){
 
 }
 
-void half_Step(char dir, int steps){
-    
+void half_Step(char step, int delay){
+    setMode(1);
+    int i = 0;
+     while(i<steps){
+         _RB14 = 1;
+         delay_us(delay);
+         _RB14 = 0;
+         delay_us(delay);
+         i++;
+     }     
 }
 
 void quarter_Step(int steps, int delay){
@@ -119,8 +127,16 @@ void quarter_Step(int steps, int delay){
      } 
 }
 
-void eighth_Step(char dir, int steps){
-    
+void eighth_Step(char step, int delay){
+     setMode(3);
+    int i = 0;
+     while(i<steps){
+         _RB14 = 1;
+         delay_us(delay);
+         _RB14 = 0;
+         delay_us(delay);
+         i++;
+     }    
 }
 
 void sixteenth_Step(int steps, int delay){
