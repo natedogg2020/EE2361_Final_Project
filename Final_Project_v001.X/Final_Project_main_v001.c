@@ -103,7 +103,7 @@ void full_Step(int steps, int delay){
 
 }
 
-void half_Step(char step, int delay){
+void half_Step(int step, int delay){
     setMode(1);
     int i = 0;
      while(i<steps){
@@ -127,7 +127,7 @@ void quarter_Step(int steps, int delay){
      } 
 }
 
-void eighth_Step(char step, int delay){
+void eighth_Step(int step, int delay){
      setMode(3);
     int i = 0;
      while(i<steps){
@@ -203,7 +203,11 @@ int main(void) {
 //        msecs(500);
         full_Step(200, 5000);
         msecs(500);
+        half_Step(2 *200, 3600) 
+        msecs(500);
         quarter_Step(4 *200, 2500);
+        msecs(500);
+        eighth_Step(8*200, 1600)
         msecs(500);
         sixteenth_Step(16 *200, 800);
         msecs(500);
