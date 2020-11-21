@@ -50,6 +50,10 @@
 
 #pragma config POSCMOD = NONE
 
+int START_SPEED = 2500; //Set starting speed to 5000 us bursts, 10,000 step period
+int MAX_SPEED = 50;    //Max speed is in microseconds (min microseconds)
+
+void delay_us(unsigned int);
 
 void setup(void){
     CLKDIVbits.RCDIV = 0;  //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
@@ -103,7 +107,7 @@ void full_Step(int steps, int delay){
 
 }
 
-void half_Step(int step, int delay){
+void half_Step(int steps, int delay){
     setMode(1);
     int i = 0;
      while(i<steps){
@@ -127,7 +131,7 @@ void quarter_Step(int steps, int delay){
      } 
 }
 
-void eighth_Step(int step, int delay){
+void eighth_Step(int steps, int delay){
      setMode(3);
     int i = 0;
      while(i<steps){
@@ -163,8 +167,25 @@ void thirtieth_Step(int steps, int delay){
      } 
 }
 
-void fancy_Step(char dir, int steps, int accel, int decel){
+void fancy_Step( int steps, unsigned char mode, int accel, int decel){
+    int i = 0;
+    int speed = START_SPEED;
     
+    setMode(mode);
+     while(i<steps){
+         _RB14 = 1;
+         delay_us(speed);
+         _RB14 = 0;
+         delay_us(speed-1);
+         if(((steps - i) <= ((START_SPEED-speed)/decel)) && 
+            (speed <= START_SPEED)){ //Start decelerating
+             
+             speed += decel;
+         }else if(speed > MAX_SPEED){   //accelerate
+             speed -= accel;
+         }  //else, keep the same speed
+         i++;
+     } 
 }
 
 //Adds an additional 1.25us to the delay
@@ -190,29 +211,23 @@ int main(void) {
     msecs(10);
     while(1){
         
+        
         _RB15 = !_RB15;
          msecs(50);
-//        full_Step(5, 5000);
-//        full_Step(10, 2500);
-//        full_Step(15, 1000);
-//        full_Step(20, 500);
-//        full_Step(10000, 500);
-//        full_Step(15, 1000);
-//        full_Step(10, 2500);
-//        full_Step(5, 5000);
+        fancy_Step(32*200, 5, 5, 10);
+        msecs(500);
+//        full_Step(200, 5000);
 //        msecs(500);
-        full_Step(200, 5000);
-        msecs(500);
-        half_Step(2 *200, 3600) 
-        msecs(500);
-        quarter_Step(4 *200, 2500);
-        msecs(500);
-        eighth_Step(8*200, 1600)
-        msecs(500);
-        sixteenth_Step(16 *200, 800);
-        msecs(500);
-        thirtieth_Step(32 *200, 300);
-        msecs(500);
+//        half_Step(2 *200, 3600); 
+//        msecs(500);
+//        quarter_Step(4 *200, 2500);
+//        msecs(500);
+//        eighth_Step(8*200, 1600);
+//        msecs(500);
+//        sixteenth_Step(16 *200, 800);
+//        msecs(500);
+//        thirtieth_Step(32 *200, 300);
+//        msecs(500);
        
     }
     return 0;
