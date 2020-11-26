@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
 
-    void msecs(int n);
+    void LCD_Setup();
     void lcd_cmd(unsigned char command);
     void lcd_init(void);
     void lcd_setCursor(char x, char y);

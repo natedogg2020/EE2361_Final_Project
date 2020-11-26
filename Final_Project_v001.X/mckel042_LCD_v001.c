@@ -1,20 +1,27 @@
+/*
+ * File:   mckel042_LCD_v001.c
+ * Date: 11/26/2020
+ * Author: Nathaniel McKelvey
+ * Course number: EE2361
+ * Term: Fall 2020
+ * Lab/assignment number: Lab 5 LCD Library
+ * Short Program Description: This program utilizes the I2C2 SDA and SCL pins to
+ *      drive the given LCD to display characters, strings, and shift the 
+ *      characters across the display
+ */
+
 #include "xc.h"
 #include "mckel042_LCD_v001.h"
 
-
-
-void msecs(int n)
-{
-    TMR1 = 0x00; 
-    IFS0bits.T1IF = 0; 
-    int i; 
-    for(i=0; i<n; i++)
-    {
-        while (!_T1IF);
-        _T1IF=0; 
-    }
+void LCD_Setup(){
+    //LCD Initialization
+    I2C2CONbits.I2CEN = 0;      // Disable I2C2
+    I2C2BRG = 0x9D;             // Set Baud Rate Generator
+    I2C2CONbits.I2CEN = 1;      // Enable I2C2
+    IFS3bits.MI2C2IF = 0;       // Clear flag
+    lcd_init();
+    lcd_setCursor(0, 0);
 }
-
 void lcd_cmd(unsigned char command)
 {
     I2C2CONbits.SEN = 1;        // Begin Start sequence
@@ -123,6 +130,7 @@ void lcd_printStr(const char s[])
 
 }
 
+// Shifts characters to the left across display
 void move(void) {
     lcd_cmd(0b00011000);
 }
