@@ -30,7 +30,6 @@
  */
 #include "xc.h"
 #include "mckel042_LCD_v001.h"
-
 //#include "DRV8825_main_v001.h"
 
 // CW1: FLASH CONFIGURATION WORD 1 (see PIC24 Family Reference Manual 24.1)
@@ -51,10 +50,15 @@
 
 #pragma config POSCMOD = NONE
 
+//#define _ISR __attribute__((interrupt (no_auto_psv)))
+int MAX_FAULTS = 2;      //Disable DRV8825 if Fault is reached n amount of times
+int NUM_FAULTS = 0;
+
 int START_SPEED = 2000; //Set starting speed to 5000 us bursts, 10,000 step period
 int MAX_SPEED = 170;    //Max speed is in microseconds (min microseconds)
 
 void delay_us(unsigned int);
+void LCD_SpecialPrint(const char top[], const char bottom[]);
 
 void setup(void){
     CLKDIVbits.RCDIV = 0;  //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
@@ -70,10 +74,21 @@ void setup(void){
     
     //DRV8825 Initializations
 //    TRISA = 0b0000000000011111;  //set port A to inputs, 
-    TRISB = 0b0000000000000011;  //and port B to outputs
+    TRISB = 0b0000000000010011;  //and port B to outputs
 //    LATA = 0xffff;               //Set all of port A to HIGH
-    LATB = 0xffff;               //and all of port B to HIGH
-    //RB15 is DIR (Direction) pin, RB14 is STEP pin
+    LATB = 0xfeff;               //and all of port B to HIGH except RB8 (Enable Pin = 0v)
+    /*
+<<<<<< PIC Port |   DRV8825 Port/Pin        |   Active High/Low >>>>>>
+     * RB15     |   DIR (Direction) pin,    |   HIGH
+     * RB14     |   STEP pin                |   CCW/CW (External Shaft to Motor View)
+     * RB13     |   (M2) Mode2 Pin          |   See setMode function
+     * RB12     |   (M1) Mode1 Pin          |   ^^^
+     * RB11     |   (M0) Mode0 Pin          |   ^^^
+     * RB10     |   Sleep Pin               |   LOW
+     * RB9      |   Reset Pin               |   LOW
+     * RB8      |   Enable Pin              |   LOW 
+     * RB4      |   FAULT Pin               |   LOW (IC1 is detecting falling edge)
+    */
     
     //LCD Initialization
     I2C2CONbits.I2CEN = 0;      // Disable I2C2
@@ -82,7 +97,23 @@ void setup(void){
     IFS3bits.MI2C2IF = 0;       // Clear flag
     lcd_init();
     lcd_setCursor(0, 0);
+    
+    // Fault Detection
+    RPINR7bits.IC1R = 4;  // assign IC1 to RP14
+    T2CON = 0x0000;        // prescale 1:1,     
+    TMR2 = 0x0000;         // initialize to 0    
+    PR2 = 0XFFFF;          // max period
+        /* input compare       */    
+    IC1CON = 0x0000;       // Reset IC1    
+    IC1CON = 0x0082;       // Turn on Input Capture 1 Module
+        /* configure interrupts */       
+    IPC0bits.IC1IP = 4;    // Set module interrupt priority as 1    
+    IFS0bits.IC1IF = 0;    // Clear the IC1 interrupt status flag    
+    IEC0bits.IC1IE = 1;    // Enable IC1 interrupts    
+    T2CONbits.TON = 1;     // enable Timer2
+    
 }
+
 
 /* Function:        msecs 
  * Original Author: Nathaniel McKelvey
@@ -287,37 +318,67 @@ int main(void) {
         full_Step(dir, 200, 5000);
         LCD_SpecialPrint("FullStep", "FINISHED");
         msecs(500);
-        
+
         LCD_SpecialPrint("HalfStep", "RUNNING ");
         half_Step(2 *200, 3600); 
         LCD_SpecialPrint("HalfStep", "FINISHED");
         msecs(500);
-        
+
         LCD_SpecialPrint("4th Step", "RUNNING ");
         quarter_Step(dir, 4 *200, 2500);
         LCD_SpecialPrint("4th Step","FINISHED");
         msecs(500);
-        
+
         LCD_SpecialPrint("8th Step", "RUNNING ");
         eighth_Step(8*200, 1600);
         LCD_SpecialPrint("8th Step","FINISHED");
         msecs(500);
-        
+
         LCD_SpecialPrint("16thStep", "RUNNING ");
         sixteenth_Step(dir, 16 *200, 800);
         LCD_SpecialPrint("16thStep","FINISHED");
         msecs(500);
-        
+
         LCD_SpecialPrint("32ndStep", "RUNNING ");
         thirtieth_Step(dir, 32 *200, 300);
         LCD_SpecialPrint("32ndStep","FINISHED");
         msecs(500);
-        
+
         LCD_SpecialPrint("FncyStep", "RUNNING ");
         fancy_Step(dir, 32*200, 2, 1, 5);
         LCD_SpecialPrint("FncyStep","FINISHED");
         msecs(500);
-       
     }
     return 0;
+}
+
+void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void){              
+    
+    NUM_FAULTS++;    //Increase Number of faults detected
+    if(NUM_FAULTS >= MAX_FAULTS){
+        _RB9 = 0;   //Reset Pin set to 0V
+        _RB8 = 1;   //Disable DRV8825
+        while(1){
+            msecs(50);
+            LCD_SpecialPrint("MaxFault","Reached");
+            msecs(2000);
+            LCD_SpecialPrint("Check   ","Wiring  ");
+            msecs(2000);
+        }
+    }else{
+        msecs(100);
+        LCD_SpecialPrint("FAULT   ", "DETECTED ");
+        _RB9 = 0;   //Reset Pin set to 0V
+    //    _RB10 = 0;    //Sleep Pin 
+        msecs(5000);
+        LCD_SpecialPrint("Reseting", "DRV8825 ");
+        
+        _RB9 = 1;   //Reset Pin given 3.3V
+    //    _RB10 = 1;
+        msecs(3000);
+    }
+    
+    //Keep the flag reset at the bottom to help de-bounce fault detection
+    IFS0bits.IC1IF = 0; // Clear the IC1 interrupt status flag 
+    
 }
