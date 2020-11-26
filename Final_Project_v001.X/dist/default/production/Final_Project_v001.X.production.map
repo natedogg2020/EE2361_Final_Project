@@ -20,6 +20,7 @@ Command:
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/dsPIC33F/gld \
   build/default/production/DRV8825_main_v001.o \
   build/default/production/Final_Project_main_v001.o \
+  build/default/production/mckel042_LCD_v001.o \
   --defsym=__MPLAB_BUILD=1 \
   -Tp24FJ64GA002.gld.00 \
   --stack=16 \
@@ -53,6 +54,8 @@ c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data
                               c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_standard.o) (__data_init_standard)
 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt_start_mode_normal.Leo)
                               (__crt_start_mode_normal)
+c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-c-elf.a(strlen.XX_eo)
+                              build/default/production/mckel042_LCD_v001.o (_strlen)
 
 
 xc16-ld 1.60 (B)
@@ -65,11 +68,12 @@ Default Scalar Model: Small
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x200                0xce           0x135  (309)
-.text                        0x2ce               0x288           0x3cc  (972)
-.dinit                       0x556                 0xc            0x12  (18)
+.text                        0x200                0xda           0x147  (327)
+.const                       0x2da                0x52            0x7b  (123)
+.text                        0x32c               0x55e           0x80d  (2061)
+.dinit                       0x88a                 0xc            0x12  (18)
 
-                 Total "program" memory used (bytes):          0x513  (1299) 1%
+                 Total "program" memory used (bytes):          0x9e1  (2529) 3%
 
 
 "data" Memory  [Origin = 0x800, Length = 0x2000]
@@ -107,41 +111,57 @@ External Symbols in Program Memory (by address):
 
                   0x000200                  __resetPRI
                   0x00023c                  __psv_init
-                  0x000252                  __data_init_standard
                   0x000252                  __data_init
+                  0x000252                  __data_init_standard
                   0x0002c8                  __DefaultInterrupt
-                  0x0002ce                  _setup
-                  0x000300                  _msecs
-                  0x000328                  _setMode
-                  0x00037c                  _full_Step
-                  0x0003a6                  _half_Step
-                  0x0003d0                  _quarter_Step
-                  0x0003fa                  _eighth_Step
-                  0x000424                  _sixteenth_Step
-                  0x00044e                  _thirtieth_Step
-                  0x000478                  _fancy_Step
-                  0x0004e8                  _delay_us
-                  0x00050a                  _main
+                  0x0002ce                  _strlen
+                  0x00032c                  _setup
+                  0x000370                  _setMode
+                  0x0003c4                  _full_Step
+                  0x000402                  _half_Step
+                  0x00042c                  _quarter_Step
+                  0x00046a                  _eighth_Step
+                  0x000494                  _sixteenth_Step
+                  0x0004d2                  _thirtieth_Step
+                  0x000510                  _fancy_Step
+                  0x000594                  _delay_us
+                  0x0005b6                  _LCD_SpecialPrint
+                  0x0005d4                  _main
+                  0x000698                  _msecs
+                  0x0006c0                  _lcd_cmd
+                  0x00070e                  _lcd_init
+                  0x000760                  _lcd_setCursor
+                  0x000796                  _lcd_printChar
+                  0x0007e6                  _lcd_printStr
+                  0x000880                  _move
 
 External Symbols in Program Memory (by name):
 
+                  0x0005b6                  _LCD_SpecialPrint
                   0x0002c8                  __DefaultInterrupt
                   0x000252                  __data_init
                   0x000252                  __data_init_standard
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
-                  0x0004e8                  _delay_us
-                  0x0003fa                  _eighth_Step
-                  0x000478                  _fancy_Step
-                  0x00037c                  _full_Step
-                  0x0003a6                  _half_Step
-                  0x00050a                  _main
-                  0x000300                  _msecs
-                  0x0003d0                  _quarter_Step
-                  0x000328                  _setMode
-                  0x0002ce                  _setup
-                  0x000424                  _sixteenth_Step
-                  0x00044e                  _thirtieth_Step
+                  0x000594                  _delay_us
+                  0x00046a                  _eighth_Step
+                  0x000510                  _fancy_Step
+                  0x0003c4                  _full_Step
+                  0x000402                  _half_Step
+                  0x0006c0                  _lcd_cmd
+                  0x00070e                  _lcd_init
+                  0x000796                  _lcd_printChar
+                  0x0007e6                  _lcd_printStr
+                  0x000760                  _lcd_setCursor
+                  0x0005d4                  _main
+                  0x000880                  _move
+                  0x000698                  _msecs
+                  0x00042c                  _quarter_Step
+                  0x000370                  _setMode
+                  0x00032c                  _setup
+                  0x000494                  _sixteenth_Step
+                  0x0002ce                  _strlen
+                  0x0004d2                  _thirtieth_Step
 
 Memory Configuration
 
@@ -160,6 +180,7 @@ Linker script and memory map
 
 LOAD build/default/production/DRV8825_main_v001.o
 LOAD build/default/production/Final_Project_main_v001.o
+LOAD build/default/production/mckel042_LCD_v001.o
                     0x0001                  __MPLAB_BUILD = 0x1
 LOAD pPIC24Fxxx
 LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
@@ -179,7 +200,7 @@ LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000200         0xce
+.text             0x000200         0xda
  *(.init)
  .init            0x000200         0x4c c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_standard.o)
                   0x000200                  __resetPRI
@@ -201,6 +222,8 @@ LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
                   0x0002cc          0x2 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt_start_mode_normal.Leo)
                   0x0002cc                  __crt_start_mode
                   0x0002cc                  __crt_start_mode_normal
+ .libc.strlen     0x0002ce          0xc c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-c-elf.a(strlen.XX_eo)
+                  0x0002ce                  _strlen
 
 usercode
  *(usercode)
@@ -214,28 +237,33 @@ __CONFIG1
 .comment
  *(.comment)
 
-.debug_info       0x000000        0xb8f
+.debug_info       0x000000       0x146f
  *(.debug_info)
- .debug_info      0x000000        0xb8f build/default/production/Final_Project_main_v001.o
+ .debug_info      0x000000        0xe23 build/default/production/Final_Project_main_v001.o
+ .debug_info      0x000e23        0x64c build/default/production/mckel042_LCD_v001.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x169
+.debug_abbrev     0x000000        0x2df
  *(.debug_abbrev)
  .debug_abbrev    0x000000          0x1 build/default/production/DRV8825_main_v001.o
- .debug_abbrev    0x000001        0x168 build/default/production/Final_Project_main_v001.o
+ .debug_abbrev    0x000001        0x1ad build/default/production/Final_Project_main_v001.o
+ .debug_abbrev    0x0001ae        0x131 build/default/production/mckel042_LCD_v001.o
 
-.debug_line       0x000000        0x1aa
+.debug_line       0x000000        0x33d
  *(.debug_line)
  .debug_line      0x000000         0x1a build/default/production/DRV8825_main_v001.o
- .debug_line      0x00001a        0x190 build/default/production/Final_Project_main_v001.o
+ .debug_line      0x00001a        0x1b8 build/default/production/Final_Project_main_v001.o
+ .debug_line      0x0001d2        0x16b build/default/production/mckel042_LCD_v001.o
 
-.debug_frame      0x000000        0x14c
+.debug_frame      0x000000        0x216
  *(.debug_frame)
  .debug_frame     0x000000        0x14c build/default/production/Final_Project_main_v001.o
+ .debug_frame     0x00014c         0xca build/default/production/mckel042_LCD_v001.o
 
-.debug_str        0x000000         0x53
+.debug_str        0x000000         0x86
  *(.debug_str)
- .debug_str       0x000000         0x53 build/default/production/Final_Project_main_v001.o
+ .debug_str       0x000000         0x68 build/default/production/Final_Project_main_v001.o
+ .debug_str       0x000068         0x1e build/default/production/mckel042_LCD_v001.o
 
 .debug_loc
  *(.debug_loc)
@@ -244,18 +272,22 @@ __CONFIG1
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000         0xd8
+                  0x000000        0x156
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0xd8 build/default/production/Final_Project_main_v001.o
+                  0x000000         0xe3 build/default/production/Final_Project_main_v001.o
+ .debug_pubnames
+                  0x0000e3         0x73 build/default/production/mckel042_LCD_v001.o
 
 .debug_ranges
  *(.debug_ranges)
 
-.debug_aranges    0x000000         0x18
+.debug_aranges    0x000000         0x30
  *(.debug_aranges)
  .debug_aranges
                   0x000000         0x18 build/default/production/Final_Project_main_v001.o
+ .debug_aranges
+                  0x000018         0x18 build/default/production/mckel042_LCD_v001.o
                     0x0000                  WREG0 = 0x0
                     0x0000                  _WREG0 = 0x0
                     0x0002                  WREG1 = 0x2
@@ -842,20 +874,26 @@ LOAD default_isr
 LOAD data_init
 
 __c30_signature
-                  0x000018         0x18
+                  0x000030         0x24
  __c30_signature
-                  0x000018          0x6 build/default/production/DRV8825_main_v001.o
+                  0x000030          0x6 build/default/production/DRV8825_main_v001.o
  __c30_signature
-                  0x00001e          0x6 build/default/production/Final_Project_main_v001.o
+                  0x000036          0x6 build/default/production/Final_Project_main_v001.o
  __c30_signature
-                  0x000024          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_standard.o)
+                  0x00003c          0x6 build/default/production/mckel042_LCD_v001.o
  __c30_signature
-                  0x00002a          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data_init_standard.o)
+                  0x000042          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_standard.o)
+ __c30_signature
+                  0x000048          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data_init_standard.o)
+ __c30_signature
+                  0x00004e          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-c-elf.a(strlen.XX_eo)
 
 .debug_pubtypes
-                  0x000030         0xb8
+                  0x000054        0x174
  .debug_pubtypes
-                  0x000030         0xb8 build/default/production/Final_Project_main_v001.o
+                  0x000054         0xf8 build/default/production/Final_Project_main_v001.o
+ .debug_pubtypes
+                  0x00014c         0x7c build/default/production/mckel042_LCD_v001.o
 
 .ndata              0x0800          0x4
  .ndata             0x0800          0x4 build/default/production/Final_Project_main_v001.o
@@ -869,20 +907,31 @@ __c30_signature
 .config_IESO      0x00abfc          0x2
  .config_IESO     0x00abfc          0x2 build/default/production/Final_Project_main_v001.o
 
-.text             0x0002ce        0x288
- .text            0x0002ce        0x288 build/default/production/Final_Project_main_v001.o
-                  0x0002ce                  _setup
-                  0x000300                  _msecs
-                  0x000328                  _setMode
-                  0x00037c                  _full_Step
-                  0x0003a6                  _half_Step
-                  0x0003d0                  _quarter_Step
-                  0x0003fa                  _eighth_Step
-                  0x000424                  _sixteenth_Step
-                  0x00044e                  _thirtieth_Step
-                  0x000478                  _fancy_Step
-                  0x0004e8                  _delay_us
-                  0x00050a                  _main
+.const              0x82da         0x52 load address 0x0002da  
+ .const             0x82da         0x52 build/default/production/Final_Project_main_v001.o
 
-.dinit            0x000556          0xc
- .dinit           0x000556          0xc data_init
+.text             0x00032c        0x55e
+ .text            0x00032c        0x36c build/default/production/Final_Project_main_v001.o
+                  0x00032c                  _setup
+                  0x000370                  _setMode
+                  0x0003c4                  _full_Step
+                  0x000402                  _half_Step
+                  0x00042c                  _quarter_Step
+                  0x00046a                  _eighth_Step
+                  0x000494                  _sixteenth_Step
+                  0x0004d2                  _thirtieth_Step
+                  0x000510                  _fancy_Step
+                  0x000594                  _delay_us
+                  0x0005b6                  _LCD_SpecialPrint
+                  0x0005d4                  _main
+ .text            0x000698        0x1f2 build/default/production/mckel042_LCD_v001.o
+                  0x000698                  _msecs
+                  0x0006c0                  _lcd_cmd
+                  0x00070e                  _lcd_init
+                  0x000760                  _lcd_setCursor
+                  0x000796                  _lcd_printChar
+                  0x0007e6                  _lcd_printStr
+                  0x000880                  _move
+
+.dinit            0x00088a          0xc
+ .dinit           0x00088a          0xc data_init

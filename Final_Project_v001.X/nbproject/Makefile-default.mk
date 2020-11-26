@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=DRV8825_main_v001.c Final_Project_main_v001.c
+SOURCEFILES_QUOTED_IF_SPACED=DRV8825_main_v001.c Final_Project_main_v001.c mckel042_LCD_v001.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/DRV8825_main_v001.o ${OBJECTDIR}/Final_Project_main_v001.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/DRV8825_main_v001.o.d ${OBJECTDIR}/Final_Project_main_v001.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/DRV8825_main_v001.o ${OBJECTDIR}/Final_Project_main_v001.o ${OBJECTDIR}/mckel042_LCD_v001.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/DRV8825_main_v001.o.d ${OBJECTDIR}/Final_Project_main_v001.o.d ${OBJECTDIR}/mckel042_LCD_v001.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/DRV8825_main_v001.o ${OBJECTDIR}/Final_Project_main_v001.o
+OBJECTFILES=${OBJECTDIR}/DRV8825_main_v001.o ${OBJECTDIR}/Final_Project_main_v001.o ${OBJECTDIR}/mckel042_LCD_v001.o
 
 # Source Files
-SOURCEFILES=DRV8825_main_v001.c Final_Project_main_v001.c
+SOURCEFILES=DRV8825_main_v001.c Final_Project_main_v001.c mckel042_LCD_v001.c
 
 
 
@@ -109,6 +109,13 @@ ${OBJECTDIR}/Final_Project_main_v001.o: Final_Project_main_v001.c  nbproject/Mak
 	${MP_CC} $(MP_EXTRA_CC_PRE)  Final_Project_main_v001.c  -o ${OBJECTDIR}/Final_Project_main_v001.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Final_Project_main_v001.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
 	@${FIXDEPS} "${OBJECTDIR}/Final_Project_main_v001.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/mckel042_LCD_v001.o: mckel042_LCD_v001.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/mckel042_LCD_v001.o.d 
+	@${RM} ${OBJECTDIR}/mckel042_LCD_v001.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  mckel042_LCD_v001.c  -o ${OBJECTDIR}/mckel042_LCD_v001.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mckel042_LCD_v001.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
+	@${FIXDEPS} "${OBJECTDIR}/mckel042_LCD_v001.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/DRV8825_main_v001.o: DRV8825_main_v001.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -123,6 +130,13 @@ ${OBJECTDIR}/Final_Project_main_v001.o: Final_Project_main_v001.c  nbproject/Mak
 	@${RM} ${OBJECTDIR}/Final_Project_main_v001.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  Final_Project_main_v001.c  -o ${OBJECTDIR}/Final_Project_main_v001.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Final_Project_main_v001.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
 	@${FIXDEPS} "${OBJECTDIR}/Final_Project_main_v001.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/mckel042_LCD_v001.o: mckel042_LCD_v001.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/mckel042_LCD_v001.o.d 
+	@${RM} ${OBJECTDIR}/mckel042_LCD_v001.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  mckel042_LCD_v001.c  -o ${OBJECTDIR}/mckel042_LCD_v001.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mckel042_LCD_v001.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp=${DFP_DIR}/xc16
+	@${FIXDEPS} "${OBJECTDIR}/mckel042_LCD_v001.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

@@ -29,6 +29,7 @@
  *   
  */
 #include "xc.h"
+#include "mckel042_LCD_v001.h"
 
 //#include "DRV8825_main_v001.h"
 
@@ -50,8 +51,8 @@
 
 #pragma config POSCMOD = NONE
 
-int START_SPEED = 2500; //Set starting speed to 5000 us bursts, 10,000 step period
-int MAX_SPEED = 50;    //Max speed is in microseconds (min microseconds)
+int START_SPEED = 2000; //Set starting speed to 5000 us bursts, 10,000 step period
+int MAX_SPEED = 170;    //Max speed is in microseconds (min microseconds)
 
 void delay_us(unsigned int);
 
@@ -73,19 +74,45 @@ void setup(void){
 //    LATA = 0xffff;               //Set all of port A to HIGH
     LATB = 0xffff;               //and all of port B to HIGH
     //RB15 is DIR (Direction) pin, RB14 is STEP pin
+    
+    //LCD Initialization
+    I2C2CONbits.I2CEN = 0;      // Disable I2C2
+    I2C2BRG = 0x9D;             // Set Baud Rate Generator
+    I2C2CONbits.I2CEN = 1;      // Enable I2C2
+    IFS3bits.MI2C2IF = 0;       // Clear flag
+    lcd_init();
+    lcd_setCursor(0, 0);
 }
 
-void msecs(int n)
-{
-    TMR1 = 0x00; //Clear T1 register
-    _T1IF = 0; //Clear the T1 interrupt flag
-    int i; 
-    for(i=0; i<n; i++){
-        while (!_T1IF); //Wait for TMR1 to overflow
-        _T1IF=0; 
-    }
-}
+/* Function:        msecs 
+ * Original Author: Nathaniel McKelvey
+ * Description:     delays n amount of miilliseconds
+ * Parameters:      
+ *      n    : determines amount of milliseconds to delay
+ */
+//void msecs(int n)
+//{
+//    TMR1 = 0x00; //Clear T1 register
+//    _T1IF = 0; //Clear the T1 interrupt flag
+//    int i; 
+//    for(i=0; i<n; i++){
+//        while (!_T1IF); //Wait for TMR1 to overflow
+//        _T1IF=0; 
+//    }
+//}
 
+/* Function:        setMode 
+ * Original Author: Nathaniel McKelvey
+ * Description:     setMode sets the DRV8825 with variable microstepping
+ *      mode = 0 :  Full Stepping
+ *             1 :  Half Stepping
+ *             2 :  1/4th Stepping
+ *             3 :  1/8th Stepping
+ *             4 :  1/16th Stepping
+ *             5 :  1/32nd Stepping
+ * Parameters:      
+ *      mode    : Determines the direction of rotation (1 for CW, 0 for CCW)
+ */
 void setMode(unsigned char mode){
     if(mode <8 ){   //Actually good mode number
         _RB13 = mode >>2;       //Plugged into M2
@@ -94,7 +121,8 @@ void setMode(unsigned char mode){
     }
 }
 
-void full_Step(int steps, int delay){
+void full_Step(int dir, int steps, int delay){
+     _RB15 = dir;                //Set the direction pin
     setMode(0);
     int i = 0;
      while(i<steps){
@@ -107,6 +135,13 @@ void full_Step(int steps, int delay){
 
 }
 
+/* Function:        half_Step
+ * Original Author: Hai Nguyen
+ * Description:     
+ * Parameters:
+ *      steps   : 
+ *      delay   : 
+ */
 void half_Step(int steps, int delay){
     setMode(1);
     int i = 0;
@@ -119,7 +154,16 @@ void half_Step(int steps, int delay){
      }     
 }
 
-void quarter_Step(int steps, int delay){
+/* Function:        quarter_Step 
+ * Original Author: Nathaniel McKelvey
+ * Description:     quarter_Step drives the DRV8825 with 1/4th microstepping
+ * Parameters:      
+ *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
+ *      steps   : Number of steps to rotate
+ *      delay   : delay between steps in microseconds. 2*delay is the period
+ */
+void quarter_Step(int dir, int steps, int delay){
+     _RB15 = dir;                //Set the direction pin
     setMode(2);
     int i = 0;
      while(i<steps){
@@ -143,7 +187,16 @@ void eighth_Step(int steps, int delay){
      }    
 }
 
-void sixteenth_Step(int steps, int delay){
+/* Function:        sixteenth_Step 
+ * Original Author: Nathaniel McKelvey
+ * Description:     sixteenth_Step drives the DRV8825 with 1/16th microstepping
+ * Parameters:      
+ *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
+ *      steps   : Number of steps to rotate
+ *      delay   : delay between steps in microseconds. 2*delay is the period
+ */
+void sixteenth_Step(int dir, int steps, int delay){
+    _RB15 = dir;                //Set the direction pin
     setMode(4);
     int i = 0;
      while(i<steps){
@@ -155,7 +208,16 @@ void sixteenth_Step(int steps, int delay){
      } 
 }
 
-void thirtieth_Step(int steps, int delay){
+/* Function:        thirtieth_Step 
+ * Original Author: Nathaniel McKelvey
+ * Description:     thirtieth_Step drives the DRV8825 with 1/32nd microstepping
+ * Parameters:      
+ *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
+ *      steps   : Number of steps to rotate
+ *      delay   : delay between steps in microseconds. 2*delay is the period
+ */
+void thirtieth_Step(int dir, int steps, int delay){
+    _RB15 = dir;                //Set the direction pin
     setMode(5);
     int i = 0;
      while(i<steps){
@@ -167,23 +229,30 @@ void thirtieth_Step(int steps, int delay){
      } 
 }
 
-void fancy_Step( int steps, unsigned char mode, int accel, int decel){
-    int i = 0;
-    int speed = START_SPEED;
+void fancy_Step(int dir, int steps, unsigned char mode, int accel, int decel){
+    _RB15 = dir;                //Set the direction pin
+    int i = 0;                  //Initialize our iterator, i
+    int speed = START_SPEED;    //Set initial speed to START_SPEED
+    setMode(mode);              //Set microstepping mode
     
-    setMode(mode);
+    //Start Stepping
      while(i<steps){
          _RB14 = 1;
          delay_us(speed);
          _RB14 = 0;
-         delay_us(speed-1);
+         //speed-1 to compensate for the time to complete speed calculations
+         delay_us(speed-1); 
+         // speed calculations to determine if speed should be 
+         // increased, decreased, or maintained
          if(((steps - i) <= ((START_SPEED-speed)/decel)) && 
-            (speed <= START_SPEED)){ //Start decelerating
-             
+                (speed <= START_SPEED)){ 
+             //Start decelerating
              speed += decel;
-         }else if(speed > MAX_SPEED){   //accelerate
+         }else if(speed > MAX_SPEED){   
+             //accelerate
              speed -= accel;
-         }  //else, keep the same speed
+         }  //else, keep the same speed, which could be 
+            //min: speed, max: speed + 2*decel -1
          i++;
      } 
 }
@@ -197,37 +266,57 @@ void delay_us(unsigned int us){
     }
 }
 
+void LCD_SpecialPrint(const char top[], const char bottom[]){
+    lcd_setCursor(0, 0);
+    lcd_printStr(top);
+    lcd_setCursor(0, 1);
+    lcd_printStr(bottom);
+}
+
 int main(void) {
     setup();
     int dir = 0;
-//    _RB15 = dir;
     msecs(50);
-    delay_us(1);
-    delay_us(2);
-    delay_us(5);
-    delay_us(10);
-    delay_us(50000);
     
-    msecs(10);
     while(1){
         
-        
-        _RB15 = !_RB15;
-         msecs(50);
-        fancy_Step(32*200, 5, 5, 10);
+        dir = !dir;
+//        _RB15 = !_RB15;
+//         msecs(50);
+        LCD_SpecialPrint("FullStep", "RUNNING ");
+        full_Step(dir, 200, 5000);
+        LCD_SpecialPrint("FullStep", "FINISHED");
         msecs(500);
-//        full_Step(200, 5000);
-//        msecs(500);
-//        half_Step(2 *200, 3600); 
-//        msecs(500);
-//        quarter_Step(4 *200, 2500);
-//        msecs(500);
-//        eighth_Step(8*200, 1600);
-//        msecs(500);
-//        sixteenth_Step(16 *200, 800);
-//        msecs(500);
-//        thirtieth_Step(32 *200, 300);
-//        msecs(500);
+        
+        LCD_SpecialPrint("HalfStep", "RUNNING ");
+        half_Step(2 *200, 3600); 
+        LCD_SpecialPrint("HalfStep", "FINISHED");
+        msecs(500);
+        
+        LCD_SpecialPrint("4th Step", "RUNNING ");
+        quarter_Step(dir, 4 *200, 2500);
+        LCD_SpecialPrint("4th Step","FINISHED");
+        msecs(500);
+        
+        LCD_SpecialPrint("8th Step", "RUNNING ");
+        eighth_Step(8*200, 1600);
+        LCD_SpecialPrint("8th Step","FINISHED");
+        msecs(500);
+        
+        LCD_SpecialPrint("16thStep", "RUNNING ");
+        sixteenth_Step(dir, 16 *200, 800);
+        LCD_SpecialPrint("16thStep","FINISHED");
+        msecs(500);
+        
+        LCD_SpecialPrint("32ndStep", "RUNNING ");
+        thirtieth_Step(dir, 32 *200, 300);
+        LCD_SpecialPrint("32ndStep","FINISHED");
+        msecs(500);
+        
+        LCD_SpecialPrint("FncyStep", "RUNNING ");
+        fancy_Step(dir, 32*200, 2, 1, 5);
+        LCD_SpecialPrint("FncyStep","FINISHED");
+        msecs(500);
        
     }
     return 0;
