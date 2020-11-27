@@ -67,7 +67,13 @@ void setup(void){
     LCD_Setup();
  
  /*
-
+//Hi Nate, 
+//I add a button that we can change the modes for the motor. We can press many times to change modes.
+//went we stop 1 second, the mode will be set. However the new mode is just set when the program finish the loop in main.
+// because the first I use two buttons for set Mode and Run, but it's a fault with IC3, 
+//I also used external interrupt but the interrupt did not occur.
+//This button can unnecessary because the motor is default worked with a program, 
+//but I think it is easy to show our functions separately in the representation
 
 //BUTTON  connect RP5_pin
    
