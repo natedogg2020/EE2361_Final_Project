@@ -179,9 +179,10 @@ void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
         if(set == 7){
              LCD_SpecialPrint("SETTING", "FncyStep");
         }  
-        if(set == 7){
+        if(set == 8){
              LCD_SpecialPrint("SETTING", "ALL_Step");
         } 
+
    msecs(1000);
 }
 
