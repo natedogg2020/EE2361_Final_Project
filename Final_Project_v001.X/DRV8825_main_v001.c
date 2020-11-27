@@ -120,7 +120,18 @@ void full_Step(int dir, int steps, int delay){
          i++;
      } 
 }
-
+void half_Step(int dir,int steps, int delay){
+      _RB15 = dir; 
+    setMode(1);
+    int i = 0;
+     while(i<steps){
+         _RB14 = 1;
+         delay_us(delay);
+         _RB14 = 0;
+         delay_us(delay);
+         i++;
+     }
+}
 /* Function:        quarter_Step 
  * Original Author: Nathaniel McKelvey
  * Description:     quarter_Step drives the DRV8825 with 1/4th microstepping
@@ -141,7 +152,18 @@ void quarter_Step(int dir, int steps, int delay){
          i++;
      } 
 }
-
+void eighth_Step(int dir, int steps, int delay){
+    _RB15 = dir;
+     setMode(3);
+    int i = 0;
+     while(i<steps){
+         _RB14 = 1;
+         delay_us(delay);
+         _RB14 = 0;
+         delay_us(delay);
+         i++;
+     }
+}
 /* Function:        sixteenth_Step 
  * Original Author: Nathaniel McKelvey
  * Description:     sixteenth_Step drives the DRV8825 with 1/16th microstepping
