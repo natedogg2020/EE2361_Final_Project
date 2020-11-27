@@ -65,38 +65,50 @@ void setup(void){
     
     DRV8825_Setup();
     LCD_Setup();
-}
+ 
+ /*
+//Hi Nate, I add a button that we can change the modes for the motor. W can press many times to change modes.
+//went we stop 1 second, the mode will be set. however the new is also when finish loop in main.
+// because the first I use two buttons for Mode and Run, but it's a fault with IC3, 
+//I also used external interrupt but the interrupt did not occur.
+//This button can not necessary because the motor is default worked with a program, 
+//but I think it is easy to show our function in the representation
 
-/* Function:        half_Step
- * Original Author: Hai Nguyen
- * Description:     
- * Parameters:
- *      steps   : 
- *      delay   : 
+//BUTTON  connect RP5_pin
+   
+     T3CONbits.TON = 0;
+    T3CONbits.TCKPS = 0b11;         //.11 = 1:256 prescale value
+    T3CONbits.TCS = 0b0;            //.0 = Internal clock (FOSC/2)
+    T3CONbits.TGATE = 0b0;      //.0 = Gated time accumulation disabled (when TCS = 0)
+    
+    TMR3 = 0;
+    PR3 = 0xffff;
+    T3CONbits.TON = 1; // Start 16-bit Timer2
+    
+   
+    IFS0bits.T3IF = 0; // Clear T2 Interrupt Status Flag
+    IEC0bits.T3IE = 1; // Enable T2 interrupt
+    
+    
+    IC2CONbits.ICTMR = 0;   // Select Timer3 for IC1 Time
+    IC2CONbits.ICI = 0b00;  // Interrupt on every capture event
+    IC2CONbits.ICM = 0b011; // Generate capture event on every Rising edge
+    
+  //  IPC0bits.IC2IP = 2; // Setup IC1 interrupt priority level
+    IFS0bits.IC2IF = 0; // Clear IC1 Interrupt Status Flag
+    IEC0bits.IC2IE = 1; // Enable IC1 interrupt
+        __builtin_write_OSCCONL(OSCCON & 0xbf); // unlock PPS
+    RPINR7bits.IC2R = 5;
+   // RPOR3bits.RP6R = 18; // Use Pin RP6 for Output Compare 1 = "18" (Table 10-3)
+    __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
+ 
  */
-void half_Step(int steps, int delay){
-    setMode(1);
-    int i = 0;
-     while(i<steps){
-         _RB14 = 1;
-         delay_us(delay);
-         _RB14 = 0;
-         delay_us(delay);
-         i++;
-     }     
+ 
 }
 
-void eighth_Step(int steps, int delay){
-     setMode(3);
-    int i = 0;
-     while(i<steps){
-         _RB14 = 1;
-         delay_us(delay);
-         _RB14 = 0;
-         delay_us(delay);
-         i++;
-     }    
-}
+
+
+
 
 void fancy_Step(int dir, int steps, unsigned char mode, int accel, int decel){
     _RB15 = dir;                //Set the direction pin
@@ -133,6 +145,46 @@ void LCD_SpecialPrint(const char top[], const char bottom[]){
     lcd_printStr(bottom);
 }
 
+
+
+/*
+void __attribute__((__interrupt__, __auto_psv__)) _T3Interrupt(void) {
+    _T3IF = 0;      
+}
+void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
+    _IC2IF = 0;
+   msecs(10);
+   set++;
+   if(set == 9)set = 1;
+   
+        if(set == 1){
+             LCD_SpecialPrint("SETTING", "Full_step");
+        }
+        if(set == 2){
+             LCD_SpecialPrint("SETTING", "Halt_step");
+        }
+        if(set == 3){
+             LCD_SpecialPrint("SETTING", "Quater_step");
+        }
+        if(set == 4){
+             LCD_SpecialPrint("SETTING", "Eighth_step");
+        }
+        if(set == 5){
+             LCD_SpecialPrint("SETTING", "16thStep");
+        }  
+        if(set == 6){
+             LCD_SpecialPrint("SETTING", "32ndStep");
+        } 
+        if(set == 7){
+             LCD_SpecialPrint("SETTING", "FncyStep");
+        }  
+        if(set == 7){
+             LCD_SpecialPrint("SETTING", "ALL_Step");
+        } 
+   msecs(1000);
+}
+
+*/
 int main(void) {
     setup();
     int dir = 0;
@@ -149,7 +201,7 @@ int main(void) {
         msecs(500);
 
         LCD_SpecialPrint("HalfStep", "RUNNING ");
-        half_Step(2 *200, 3600); 
+        half_Step(dir, 2 *200, 3600); 
         LCD_SpecialPrint("HalfStep", "FINISHED");
         msecs(500);
 
@@ -159,7 +211,7 @@ int main(void) {
         msecs(500);
 
         LCD_SpecialPrint("8th Step", "RUNNING ");
-        eighth_Step(8*200, 1600);
+        eighth_Step(dir, 8*200, 1600);
         LCD_SpecialPrint("8th Step","FINISHED");
         msecs(500);
 
@@ -178,6 +230,105 @@ int main(void) {
         LCD_SpecialPrint("FncyStep","FINISHED");
         msecs(500);
     }
+ 
+ 
+ /*
+     
+    while(1){
+        run = set;
+        dir = !dir  
+        
+            if (run == 1){
+                msecs(500);           
+                LCD_SpecialPrint("FullStep", "RUNNING ");
+                full_Step(dir, 200, 5000);
+                LCD_SpecialPrint("FullStep", "FINISHED");                
+            }
+            
+            if (run == 2){
+                msecs(500);           
+                LCD_SpecialPrint("half_Step", "RUNNING ");
+                half_Step(dir, 2 *200, 3600);
+                LCD_SpecialPrint("half_Step", "FINISHED");                
+
+            }
+
+            if (run == 3){
+                msecs(500);           
+                LCD_SpecialPrint("quarter_Step", "RUNNING ");
+                quarter_Step(dir, 4 *200, 2500);
+                LCD_SpecialPrint("quarter_Step", "FINISHED");                
+            }
+
+            if (run ==4){
+                msecs(500);           
+                LCD_SpecialPrint("eighth_Step", "RUNNING ");
+                eighth_Step(dir, 8*200, 1600);
+                LCD_SpecialPrint("eighth_Step", "FINISHED");                
+            }
+
+            if (run == 5){
+                msecs(500);           
+                LCD_SpecialPrint("16th_Step", "RUNNING ");
+                sixteenth_Step(dir, 16 *200, 800);
+                LCD_SpecialPrint("16th_Step", "FINISHED");                
+            }
+            
+            if (run == 6){
+                LCD_SpecialPrint("32ndStep", "RUNNING ");
+                thirtieth_Step(dir, 32 *200, 300);
+                LCD_SpecialPrint("32ndStep","FINISHED");
+                msecs(500);
+            }        
+        
+            if (run == 7){
+                LCD_SpecialPrint("FncyStep", "RUNNING ");
+                fancy_Step(dir, 32*200, 2, 1, 5);
+                LCD_SpecialPrint("FncyStep","FINISHED");
+                msecs(500);
+            }         
+        
+            if (run == 8){
+                LCD_SpecialPrint("FullStep", "RUNNING ");
+                full_Step(dir, 200, 5000);
+                LCD_SpecialPrint("FullStep", "FINISHED");
+                msecs(500);
+
+                LCD_SpecialPrint("HalfStep", "RUNNING ");
+                half_Step(dir, 2 *200, 3600);
+                LCD_SpecialPrint("HalfStep", "FINISHED");
+                msecs(500);
+
+                LCD_SpecialPrint("4th Step", "RUNNING ");
+                quarter_Step(dir, 4 *200, 2500);
+                LCD_SpecialPrint("4th Step","FINISHED");
+                msecs(500);
+
+                LCD_SpecialPrint("8th Step", "RUNNING ");
+                eighth_Step(dir, 8*200, 1600);
+                LCD_SpecialPrint("8th Step","FINISHED");
+                msecs(500);
+
+                LCD_SpecialPrint("16thStep", "RUNNING ");
+                sixteenth_Step(dir, 16 *200, 800);
+                LCD_SpecialPrint("16thStep","FINISHED");
+                msecs(500);
+
+                LCD_SpecialPrint("32ndStep", "RUNNING ");
+                thirtieth_Step(dir, 32 *200, 300);
+                LCD_SpecialPrint("32ndStep","FINISHED");
+                msecs(500);
+
+                LCD_SpecialPrint("FncyStep", "RUNNING ");
+                fancy_Step(dir, 32*200, 2, 1, 5);
+                LCD_SpecialPrint("FncyStep","FINISHED");
+                msecs(500);
+            }      
+
+    }
+    
+    
+ */
     return 0;
 }
 
