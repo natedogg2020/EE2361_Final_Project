@@ -20,7 +20,7 @@
 int MAX_FAULTS = 2;      //Disable DRV8825 if Fault is reached n amount of times
 int NUM_FAULTS = 0;
 
-void DRV8825_Setup(){
+void DRV8825_Setup(void){
     //DRV8825 Initializations
     TRISB = 0b0000000000010011;  //and port B to outputs
     TRISBbits.TRISB15 = 0;          // Output   |   DIR (Direction) pin
