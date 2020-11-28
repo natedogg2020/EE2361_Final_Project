@@ -51,7 +51,8 @@
 #pragma config POSCMOD = NONE
 
 //#define _ISR __attribute__((interrupt (no_auto_psv)))
-
+unsigned int set = 1;
+unsigned int run = 1;
 
 int START_SPEED = 2000; //Set starting speed to 5000 us bursts, 10,000 step period
 int MAX_SPEED = 170;    //Max speed is in microseconds (min microseconds)
@@ -180,7 +181,7 @@ int main(void) {
      
     while(1){
         run = set;
-        dir = !dir  
+        dir = !dir;  
         
             if (run == 1){
                 msecs(500);           
