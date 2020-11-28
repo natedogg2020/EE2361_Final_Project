@@ -66,14 +66,6 @@ void setup(void){
     DRV8825_Setup();
     LCD_Setup();
  
- /*
-//Hi Nate, 
-//I add a button that we can change the modes for the motor. We can press many times to change modes.
-//went we stop 1 second, the mode will be set. However the new mode is just set when the program finish the loop in main.
-// because the first I use two buttons for set Mode and Run, but it's a fault with IC3, 
-//I also used external interrupt but the interrupt did not occur.
-//This button can unnecessary because the motor is default worked with a program, 
-//but I think it is easy to show our functions separately in the representation
 
 //BUTTON  connect RP5_pin
    
@@ -103,12 +95,7 @@ void setup(void){
    // RPOR3bits.RP6R = 18; // Use Pin RP6 for Output Compare 1 = "18" (Table 10-3)
     __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
  
- */
- 
 }
-
-
-
 
 
 void fancy_Step(int dir, int steps, unsigned char mode, int accel, int decel){
@@ -147,8 +134,6 @@ void LCD_SpecialPrint(const char top[], const char bottom[]){
 }
 
 
-
-/*
 void __attribute__((__interrupt__, __auto_psv__)) _T3Interrupt(void) {
     _T3IF = 0;      
 }
@@ -186,55 +171,12 @@ void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
    msecs(1000);
 }
 
-*/
+
 int main(void) {
     setup();
     int dir = 0;
     msecs(50);
-    
-    while(1){
-        
-        dir = !dir;
-//        _RB15 = !_RB15;
-//         msecs(50);
-        LCD_SpecialPrint("FullStep", "RUNNING ");
-        full_Step(dir, 200, 5000);
-        LCD_SpecialPrint("FullStep", "FINISHED");
-        msecs(500);
-
-        LCD_SpecialPrint("HalfStep", "RUNNING ");
-        half_Step(dir, 2 *200, 3600); 
-        LCD_SpecialPrint("HalfStep", "FINISHED");
-        msecs(500);
-
-        LCD_SpecialPrint("4th Step", "RUNNING ");
-        quarter_Step(dir, 4 *200, 2500);
-        LCD_SpecialPrint("4th Step","FINISHED");
-        msecs(500);
-
-        LCD_SpecialPrint("8th Step", "RUNNING ");
-        eighth_Step(dir, 8*200, 1600);
-        LCD_SpecialPrint("8th Step","FINISHED");
-        msecs(500);
-
-        LCD_SpecialPrint("16thStep", "RUNNING ");
-        sixteenth_Step(dir, 16 *200, 800);
-        LCD_SpecialPrint("16thStep","FINISHED");
-        msecs(500);
-
-        LCD_SpecialPrint("32ndStep", "RUNNING ");
-        thirtieth_Step(dir, 32 *200, 300);
-        LCD_SpecialPrint("32ndStep","FINISHED");
-        msecs(500);
-
-        LCD_SpecialPrint("FncyStep", "RUNNING ");
-        fancy_Step(dir, 32*200, 2, 1, 5);
-        LCD_SpecialPrint("FncyStep","FINISHED");
-        msecs(500);
-    }
- 
- 
- /*
+    set = 8;
      
     while(1){
         run = set;
@@ -328,9 +270,7 @@ int main(void) {
             }      
 
     }
-    
-    
- */
+
     return 0;
 }
 
