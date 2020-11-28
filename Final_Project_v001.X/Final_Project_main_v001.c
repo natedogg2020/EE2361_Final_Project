@@ -176,7 +176,7 @@ int main(void) {
     setup();
     int dir = 0;
     msecs(50);
-    set = 8;
+    set = 8;  // run all steps
      
     while(1){
         run = set;
