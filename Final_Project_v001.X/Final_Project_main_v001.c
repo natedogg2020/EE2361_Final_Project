@@ -187,51 +187,43 @@ int main(void) {
                 LCD_SpecialPrint("FullStep", "RUNNING ");
                 full_Step(dir, 200, 5000);
                 LCD_SpecialPrint("FullStep", "FINISHED");                
-            }
-            
+            }            
             if (run == 2){
                 msecs(500);           
                 LCD_SpecialPrint("half_Step", "RUNNING ");
                 half_Step(dir, 2 *200, 3600);
                 LCD_SpecialPrint("half_Step", "FINISHED");                
-
             }
-
             if (run == 3){
                 msecs(500);           
                 LCD_SpecialPrint("quarter_Step", "RUNNING ");
                 quarter_Step(dir, 4 *200, 2500);
                 LCD_SpecialPrint("quarter_Step", "FINISHED");                
             }
-
             if (run ==4){
                 msecs(500);           
                 LCD_SpecialPrint("eighth_Step", "RUNNING ");
                 eighth_Step(dir, 8*200, 1600);
                 LCD_SpecialPrint("eighth_Step", "FINISHED");                
             }
-
             if (run == 5){
                 msecs(500);           
                 LCD_SpecialPrint("16th_Step", "RUNNING ");
                 sixteenth_Step(dir, 16 *200, 800);
                 LCD_SpecialPrint("16th_Step", "FINISHED");                
-            }
-            
+            }            
             if (run == 6){
                 LCD_SpecialPrint("32ndStep", "RUNNING ");
                 thirtieth_Step(dir, 32 *200, 300);
                 LCD_SpecialPrint("32ndStep","FINISHED");
                 msecs(500);
-            }        
-        
+            }               
             if (run == 7){
                 LCD_SpecialPrint("FncyStep", "RUNNING ");
                 fancy_Step(dir, 32*200, 2, 1, 5);
                 LCD_SpecialPrint("FncyStep","FINISHED");
                 msecs(500);
-            }         
-        
+            }                 
             if (run == 8){
                 LCD_SpecialPrint("FullStep", "RUNNING ");
                 full_Step(dir, 200, 5000);
@@ -268,9 +260,7 @@ int main(void) {
                 LCD_SpecialPrint("FncyStep","FINISHED");
                 msecs(500);
             }      
-
     }
-
     return 0;
 }
 
