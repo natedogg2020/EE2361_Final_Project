@@ -69,14 +69,14 @@ void DRV8825_Setup(void){
     
  // Input Capture 2/ Timer 3 Setup for motor control via BUTTON
     //BUTTON  connect RP5_pin
-    T3CONbits.TON = 0;
-    T3CONbits.TCKPS = 0b11;         //.11 = 1:256 prescale value
+    TMR3 = 0;
+    PR3 = 0xfffe;
+    T3CONbits.TCKPS = 0b00;         //.11 = 1:256 prescale value
     T3CONbits.TCS = 0b0;            //.0 = Internal clock (FOSC/2)
     T3CONbits.TGATE = 0b0;      //.0 = Gated time accumulation disabled (when TCS = 0)
-    
-    TMR3 = 0;
-    PR3 = 0xffff;
-    T3CONbits.TON = 1; // Start 16-bit Timer2
+    T3CONbits.TON = 1;  
+  //  IFS0bits.T3IF = 0; // Clear T2 Interrupt Status Flag
+  //  IEC0bits.T3IE = 1; // Enable T2 interrupt
     
    
     IFS0bits.T3IF = 0; // Clear T2 Interrupt Status Flag
@@ -377,9 +377,7 @@ void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void){
     }
 }
 
-void __attribute__((__interrupt__, __auto_psv__)) _T3Interrupt(void) {
-    _T3IF = 0;      
-}
+
 
 void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
     set++;
