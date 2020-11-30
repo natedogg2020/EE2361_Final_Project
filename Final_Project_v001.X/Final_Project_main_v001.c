@@ -30,8 +30,8 @@
 unsigned int set = 1;
 unsigned int run = 1;
 
-int START_SPEED = 2000; //Set starting speed to 5000 us bursts, 10,000 step period
-int MAX_SPEED = 170;    //Max speed is in microseconds (min microseconds)
+int START_SPEED = 1000; //Set starting speed to 5000 us bursts, 10,000 step period
+int MAX_SPEED = 560;    //Max speed for full_Stepping is in microseconds (min microseconds)
 
 void LCD_SpecialPrint(const char top[], const char bottom[]);
 
@@ -74,32 +74,51 @@ void setup(void){
 }
 
 
-void fancy_Step(int dir, int steps, unsigned char mode, int accel, int decel){
+void fancy_Step(int dir, long long steps, unsigned char mode, int accel, int decel,
+                unsigned int  mult, int initial_speed, int max_speed,int end_speed){
     _RB15 = dir;                //Set the direction pin
-    int i = 0;                  //Initialize our iterator, i
-    int speed = START_SPEED;    //Set initial speed to START_SPEED
+    long long i = 0;                  //Initialize our iterator, i
+    int j =1 ;
+    int speed = initial_speed;    //Set initial speed to START_SPEED
     setMode(mode);              //Set microstepping mode
     
     //Start Stepping
-     while(i<steps){
+     while(i<steps-1){
          _RB14 = 1;
          delay_us(speed);
          _RB14 = 0;
          //speed-1 to compensate for the time to complete speed calculations
-         delay_us(speed-1); 
+         delay_us(speed-2); 
          // speed calculations to determine if speed should be 
          // increased, decreased, or maintained
-         if(((steps - i) <= ((START_SPEED-speed)/decel)) && 
-                (speed <= START_SPEED)){ 
-             //Start decelerating
-             speed += decel;
-         }else if(speed > MAX_SPEED){   
-             //accelerate
-             speed -= accel;
-         }  //else, keep the same speed, which could be 
-            //min: speed, max: speed + 2*decel -1
+         if(j >= mult){
+            
+            if(decel >0){
+                if(((steps - i-1) <= (long long)(j*((end_speed-speed)/decel))) && 
+                   (speed <= end_speed)){ 
+                   //Start decelerating
+                   speed += decel;
+               }else if(speed > max_speed){   
+                    //accelerate
+                    speed -= accel;
+                }
+            }else if(speed > max_speed){   
+                //accelerate
+                speed -= accel;
+            }  //else, keep the same speed, which could be 
+               //min: speed, max: speed + 2*decel -1
+            j = 1;
+         }
+        
          i++;
+         j++;
+         
      } 
+    _RB14 = 1;
+    delay_us(speed);
+    _RB14 = 0;
+    //speed-1 to compensate for the time to complete speed calculations
+    delay_us(speed-3); 
 }
 
 void LCD_SpecialPrint(const char top[], const char bottom[]){
@@ -196,7 +215,7 @@ int main(void) {
             }               
             if (run == 7){
                 LCD_SpecialPrint("FncyStep", "RUNNING ");
-                fancy_Step(dir, 32*200, 2, 1, 5);
+                fancy_Step(dir, (long long)10*32*200, 5, 1, 2, 2*32, 250 ,17, 260);
                 LCD_SpecialPrint("FncyStep","FINISHED");
                 msecs(500);
             }                 
@@ -232,7 +251,8 @@ int main(void) {
                 msecs(500);
 
                 LCD_SpecialPrint("FncyStep", "RUNNING ");
-                fancy_Step(dir, 32*200, 2, 1, 5);
+                fancy_Step(dir, (long long)5*32*200, 5, 1, 2, 2*32, 300 ,17, 17);
+                fancy_Step(dir, (long long)10*32*200, 5, 1, 2, 128, 17 ,17, 300);
                 LCD_SpecialPrint("FncyStep","FINISHED");
                 msecs(500);
             }      
