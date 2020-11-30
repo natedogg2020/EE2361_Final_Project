@@ -71,28 +71,20 @@ void DRV8825_Setup(void){
     //BUTTON  connect RP5_pin
     TMR3 = 0;
     PR3 = 0xfffe;
-    T3CONbits.TCKPS = 0b00;         //.11 = 1:256 prescale value
-    T3CONbits.TCS = 0b0;            //.0 = Internal clock (FOSC/2)
-    T3CONbits.TGATE = 0b0;      //.0 = Gated time accumulation disabled (when TCS = 0)
+    T3CONbits.TCKPS = 0b00;         //prescale value 1:1
+    T3CONbits.TCS = 0b0;            //Internal clock (FOSC/2)
+    T3CONbits.TGATE = 0b0;      //Gated time accumulation disabled (when TCS = 0)
     T3CONbits.TON = 1;  
-  //  IFS0bits.T3IF = 0; // Clear T2 Interrupt Status Flag
-  //  IEC0bits.T3IE = 1; // Enable T2 interrupt
     
-   
-    IFS0bits.T3IF = 0; // Clear T2 Interrupt Status Flag
-    IEC0bits.T3IE = 1; // Enable T2 interrupt
-    
-    
-    IC2CONbits.ICTMR = 0;   // Select Timer3 for IC1 Time
+    IC2CONbits.ICTMR = 0;   // Select Timer3 for IC2 Time
     IC2CONbits.ICI = 0b00;  // Interrupt on every capture event
     IC2CONbits.ICM = 0b011; // Generate capture event on every Rising edge
     
-  //  IPC0bits.IC2IP = 2; // Setup IC1 interrupt priority level
+  //  IPC0bits.IC2IP = 3; // Setup IC1 interrupt priority level
     IFS0bits.IC2IF = 0; // Clear IC1 Interrupt Status Flag
     IEC0bits.IC2IE = 1; // Enable IC1 interrupt
         __builtin_write_OSCCONL(OSCCON & 0xbf); // unlock PPS
-    RPINR7bits.IC2R = 5;
-   // RPOR3bits.RP6R = 18; // Use Pin RP6 for Output Compare 1 = "18" (Table 10-3)
+    RPINR7bits.IC2R = 5;   // Use pin RP5 for IC2
     __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
 }
 
@@ -381,11 +373,12 @@ void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void){
 
 void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
     set++;
-    if(set == 9)
+    if(set == 9)           // We can choose one in eight different modes
         set = 1;
    
     if(set == 1){
          LCD_SpecialPrint("SETTING ", "1:1_step");
+        //Displaying the setting mode
     }
     if(set == 2){
          LCD_SpecialPrint("SETTING ", "1/2_step");
@@ -409,7 +402,7 @@ void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
          LCD_SpecialPrint("SETTING ", "ALL_Step");
     } 
 
-    msecs(1000);
+    msecs(1000);   //Wait 1_sec for setting is comlete
     _IC2IF = 0;  //Reset Flag at the end to help debounce the button
 }
 
