@@ -24,12 +24,14 @@ extern "C" {
     void msecs(int);
     void delay_us(unsigned int);
     void setMode(unsigned char);
+    void button_Setup();
     void full_Step(int dir, int steps, int delay);          // 1:1 Stepping
     void half_Step(int dir,int steps, int delay);
     void quarter_Step(int dir, int steps, int delay);       // 1:4 Stepping
     void eighth_Step(int dir, int steps, int delay);
     void sixteenth_Step(int dir, int steps, int delay);     // 1:16 Stepping
     void thirtieth_Step(int dir, int steps, int delay);      // 1:32 Stepping
+  
 
 #ifdef	__cplusplus
 }
