@@ -98,7 +98,8 @@ void eighth_Step(int steps, int delay){
      }    
 }
 
-void fancy_Step(int dir, long long steps, unsigned char mode, int accel, int decel,unsigned int  mult, int initial_speed, int max_speed,int end_speed){
+void fancy_Step(int dir, long long steps, unsigned char mode, int accel, int decel,
+                unsigned int  mult, int initial_speed, int max_speed,int end_speed){
     _RB15 = dir;                //Set the direction pin
     long long i = 0;                  //Initialize our iterator, i
     int j =1 ;
@@ -190,29 +191,9 @@ int main(void) {
 //        thirtieth_Step(dir, 32 *200, 300);
 //        LCD_SpecialPrint("32ndStep","FINISHED");
 //        msecs(500);
-
-        /*
-         4th stepping extra special speed acceleration
-         fancy_Step(dir, 32*200, 2, 1, 0,START_SPEED ,MAX_SPEED, MAX_SPEED);
-        fancy_Step(dir, 32*200, 2, 1, 0, MAX_SPEED, 150, 150);
-        fancy_Step(dir, 32*200, 2, 1, 0, 150, 135, 135);
-        fancy_Step(dir, 32*200, 2, 1, 0, 135, 130, 130);
-        fancy_Step(dir, 32*200, 2, 1, 5, 130, 130,START_SPEED); 
-         */
         LCD_SpecialPrint("FncyStep", "RUNNING ");
         fancy_Step(dir, (long long)5*32*200, 5, 1, 2, 2*32, 300 ,17, 17);
         fancy_Step(dir, (long long)10*32*200, 5, 1, 2, 128, 17 ,17, 300);
-//        fancy_Step(dir, (long long)10*200, 1, 5, 5, 4, START_SPEED ,300, START_SPEED);
-//        fancy_Step(dir, (long long)5*32*200, 5, 1, 0, 32, 25 ,23, 23);
-//        fancy_Step(dir, (long long)5*32*200, 5, 1, 1, 32, 23 ,20, START_SPEED);
-//        fancy_Step(dir, 204800, 5, 1, 0,20 ,20, 20);
-//        fancy_Step(dir, 32*200, 5, 1, 0, MAX_SPEED, 150, 150);
-//        fancy_Step(dir, 32*200, 5, 1, 0, 150, 135, 135);
-//        fancy_Step(dir, 32*200, 5, 1, 0, 135, 130, 130);
-//        fancy_Step(dir, 32*200, 5, 1, 0, 135, 130, 130);
-//        fancy_Step(dir, 32*200, 5, 1, 0, 135, 130, 130);
-//        fancy_Step(dir, 32*200, 5, 1, 5, 130, 130,START_SPEED); 
-//        fancy_Step(dir, 32*200, 2, 1, 5,START_SPEED ,MAX_SPEED,START_SPEED);
         LCD_SpecialPrint("FncyStep","FINISHED");
         msecs(500);
     }
