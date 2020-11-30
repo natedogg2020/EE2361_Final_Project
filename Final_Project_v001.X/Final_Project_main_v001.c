@@ -41,35 +41,9 @@ void setup(void){
     
     DRV8825_Setup();
     LCD_Setup();
- 
+    button_Setup();
 
-//BUTTON  connect RP5_pin
-   
-     T3CONbits.TON = 0;
-    T3CONbits.TCKPS = 0b11;         //.11 = 1:256 prescale value
-    T3CONbits.TCS = 0b0;            //.0 = Internal clock (FOSC/2)
-    T3CONbits.TGATE = 0b0;      //.0 = Gated time accumulation disabled (when TCS = 0)
-    
-    TMR3 = 0;
-    PR3 = 0xffff;
-    T3CONbits.TON = 1; // Start 16-bit Timer2
-    
-   
-    IFS0bits.T3IF = 0; // Clear T2 Interrupt Status Flag
-    IEC0bits.T3IE = 1; // Enable T2 interrupt
-    
-    
-    IC2CONbits.ICTMR = 0;   // Select Timer3 for IC1 Time
-    IC2CONbits.ICI = 0b00;  // Interrupt on every capture event
-    IC2CONbits.ICM = 0b011; // Generate capture event on every Rising edge
-    
-  //  IPC0bits.IC2IP = 2; // Setup IC1 interrupt priority level
-    IFS0bits.IC2IF = 0; // Clear IC1 Interrupt Status Flag
-    IEC0bits.IC2IE = 1; // Enable IC1 interrupt
-        __builtin_write_OSCCONL(OSCCON & 0xbf); // unlock PPS
-    RPINR7bits.IC2R = 5;
-   // RPOR3bits.RP6R = 18; // Use Pin RP6 for Output Compare 1 = "18" (Table 10-3)
-    __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
+
  
 }
 
