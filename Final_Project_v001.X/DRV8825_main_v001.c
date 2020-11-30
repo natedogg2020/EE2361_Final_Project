@@ -1,3 +1,10 @@
+/*
+ * File:   DRV8825_main_v001.c
+ * Author: Nate McKelvey and Hai Nguyen
+ *
+ * Created on November 12, 2020
+ */
+
 #include "xc.h"                 //For the _IC1Interrupt
 #include "DRV8825_main_v001.h"
 
@@ -14,9 +21,6 @@
      * RB4      |   FAULT Pin               |   LOW (IC1 is detecting falling edge)
     */
 
-
-//  I wanted to have these files made, but not implemented yet until we know
-//  exactly how we want to have the functions declared from Final_Project_main_v001.c
 int MAX_FAULTS = 2;      //Disable DRV8825 if Fault is reached n amount of times
 int NUM_FAULTS = 0;
 
@@ -57,6 +61,7 @@ void DRV8825_Setup(){
     IEC0bits.IC1IE = 1;    // Enable IC1 interrupts    
     T2CONbits.TON = 1;     // enable Timer2
 }
+
 /* Function:        msecs 
  * Original Author: Nathaniel McKelvey
  * Description:     delays 'n' amount of milliseconds
@@ -120,6 +125,15 @@ void full_Step(int dir, int steps, int delay){
          i++;
      } 
 }
+
+/* Function:        half_Step
+ * Original Author: Hai Nguyen
+ * Description:     
+ * Parameters:
+ *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
+ *      steps   : Number of steps to rotate
+ *      delay   : delay between steps in microseconds. 2*delay is the period
+ */
 void half_Step(int dir,int steps, int delay){
       _RB15 = dir; 
     setMode(1);
@@ -132,6 +146,7 @@ void half_Step(int dir,int steps, int delay){
          i++;
      }
 }
+
 /* Function:        quarter_Step 
  * Original Author: Nathaniel McKelvey
  * Description:     quarter_Step drives the DRV8825 with 1/4th microstepping
@@ -152,6 +167,15 @@ void quarter_Step(int dir, int steps, int delay){
          i++;
      } 
 }
+
+/* Function:        eighth_Step
+ * Original Author: Hai Nguyen
+ * Description:     
+ * Parameters:
+ *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
+ *      steps   : Number of steps to rotate
+ *      delay   : delay between steps in microseconds. 2*delay is the period
+ */
 void eighth_Step(int dir, int steps, int delay){
     _RB15 = dir;
      setMode(3);
@@ -164,6 +188,7 @@ void eighth_Step(int dir, int steps, int delay){
          i++;
      }
 }
+
 /* Function:        sixteenth_Step 
  * Original Author: Nathaniel McKelvey
  * Description:     sixteenth_Step drives the DRV8825 with 1/16th microstepping
@@ -210,10 +235,7 @@ void thirtieth_Step(int dir, int steps, int delay){
  * Original Author: Nathaniel McKelvey
  * Description:     _IC1Interrupt is utilized to halt the DRV8825 if the MAX_FAULTS
  *                  is reached. If the MAX_FAULTS isn't reached, the DRV8825
- * Parameters:      
- *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
- *      steps   : Number of steps to rotate
- *      delay   : delay between steps in microseconds. 2*delay is the period
+ * Parameters: None
  */
 void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void){              
     
@@ -240,6 +262,4 @@ void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void){
         IFS0bits.IC1IF = 0; // Clear the IC1 interrupt status flag 
         _RB9 = 1;   //Reset Pin given 3.3V
     }
-    
-    
 }

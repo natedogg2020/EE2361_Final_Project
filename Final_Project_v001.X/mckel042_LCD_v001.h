@@ -1,6 +1,6 @@
 /* 
  * File:   mckel042_LCD_v001.h
- * Author: Nate
+ * Author: Nathaniel McKelvey
  *
  * Created on November 23, 2020, 8:25 PM
  */

@@ -6,6 +6,13 @@
  */
 
 #ifndef DRV8825_MAIN_V001_H
+/*
+ * File:   DRV8825_main_v001.h
+ * Author: Nate McKelvey and Hai Nguyen
+ *
+ * Created on November 12, 2020
+ */
+
 #define	DRV8825_MAIN_V001_H
 
 #ifdef	__cplusplus
