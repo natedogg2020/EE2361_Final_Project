@@ -6,8 +6,9 @@
  */
 
 #include "xc.h"
-#include "mckel042_LCD_v001.h"
 #include "DRV8825_main_v001.h"
+#include "mckel042_LCD_v001.h"
+
 
 // CW1: FLASH CONFIGURATION WORD 1 (see PIC24 Family Reference Manual 24.1)
 #pragma config ICS = PGx1          // Comm Channel Select (Emulator EMUC1/EMUD1 pins are shared with PGC1/PGD1)
@@ -27,12 +28,6 @@
 
 #pragma config POSCMOD = NONE
 
-unsigned int set = 1;
-unsigned int run = 1;
-
-int START_SPEED = 1000; //Set starting speed to 5000 us bursts, 10,000 step period
-int MAX_SPEED = 560;    //Max speed for full_Stepping is in microseconds (min microseconds)
-
 void LCD_SpecialPrint(const char top[], const char bottom[]);
 
 void setup(void){
@@ -41,84 +36,6 @@ void setup(void){
     
     DRV8825_Setup();
     LCD_Setup();
- 
-
-//BUTTON  connect RP5_pin
-   
-     T3CONbits.TON = 0;
-    T3CONbits.TCKPS = 0b11;         //.11 = 1:256 prescale value
-    T3CONbits.TCS = 0b0;            //.0 = Internal clock (FOSC/2)
-    T3CONbits.TGATE = 0b0;      //.0 = Gated time accumulation disabled (when TCS = 0)
-    
-    TMR3 = 0;
-    PR3 = 0xffff;
-    T3CONbits.TON = 1; // Start 16-bit Timer2
-    
-   
-    IFS0bits.T3IF = 0; // Clear T2 Interrupt Status Flag
-    IEC0bits.T3IE = 1; // Enable T2 interrupt
-    
-    
-    IC2CONbits.ICTMR = 0;   // Select Timer3 for IC1 Time
-    IC2CONbits.ICI = 0b00;  // Interrupt on every capture event
-    IC2CONbits.ICM = 0b011; // Generate capture event on every Rising edge
-    
-  //  IPC0bits.IC2IP = 2; // Setup IC1 interrupt priority level
-    IFS0bits.IC2IF = 0; // Clear IC1 Interrupt Status Flag
-    IEC0bits.IC2IE = 1; // Enable IC1 interrupt
-        __builtin_write_OSCCONL(OSCCON & 0xbf); // unlock PPS
-    RPINR7bits.IC2R = 5;
-   // RPOR3bits.RP6R = 18; // Use Pin RP6 for Output Compare 1 = "18" (Table 10-3)
-    __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
- 
-}
-
-
-void fancy_Step(int dir, long long steps, unsigned char mode, int accel, int decel,
-                unsigned int  mult, int initial_speed, int max_speed,int end_speed){
-    _RB15 = dir;                //Set the direction pin
-    long long i = 0;                  //Initialize our iterator, i
-    int j =1 ;
-    int speed = initial_speed;    //Set initial speed to START_SPEED
-    setMode(mode);              //Set microstepping mode
-    
-    //Start Stepping
-     while(i<steps-1){
-         _RB14 = 1;
-         delay_us(speed);
-         _RB14 = 0;
-         //speed-1 to compensate for the time to complete speed calculations
-         delay_us(speed-2); 
-         // speed calculations to determine if speed should be 
-         // increased, decreased, or maintained
-         if(j >= mult){
-            
-            if(decel >0){
-                if(((steps - i-1) <= (long long)(j*((end_speed-speed)/decel))) && 
-                   (speed <= end_speed)){ 
-                   //Start decelerating
-                   speed += decel;
-               }else if(speed > max_speed){   
-                    //accelerate
-                    speed -= accel;
-                }
-            }else if(speed > max_speed){   
-                //accelerate
-                speed -= accel;
-            }  //else, keep the same speed, which could be 
-               //min: speed, max: speed + 2*decel -1
-            j = 1;
-         }
-        
-         i++;
-         j++;
-         
-     } 
-    _RB14 = 1;
-    delay_us(speed);
-    _RB14 = 0;
-    //speed-1 to compensate for the time to complete speed calculations
-    delay_us(speed-3); 
 }
 
 void LCD_SpecialPrint(const char top[], const char bottom[]){
@@ -128,136 +45,96 @@ void LCD_SpecialPrint(const char top[], const char bottom[]){
     lcd_printStr(bottom);
 }
 
-
-void __attribute__((__interrupt__, __auto_psv__)) _T3Interrupt(void) {
-    _T3IF = 0;      
-}
-void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
-    _IC2IF = 0;
-   msecs(10);
-   set++;
-   if(set == 9)set = 1;
-   
-        if(set == 1){
-             LCD_SpecialPrint("SETTING", "Full_step");
-        }
-        if(set == 2){
-             LCD_SpecialPrint("SETTING", "Halt_step");
-        }
-        if(set == 3){
-             LCD_SpecialPrint("SETTING", "Quater_step");
-        }
-        if(set == 4){
-             LCD_SpecialPrint("SETTING", "Eighth_step");
-        }
-        if(set == 5){
-             LCD_SpecialPrint("SETTING", "16thStep");
-        }  
-        if(set == 6){
-             LCD_SpecialPrint("SETTING", "32ndStep");
-        } 
-        if(set == 7){
-             LCD_SpecialPrint("SETTING", "FncyStep");
-        }  
-        if(set == 8){
-             LCD_SpecialPrint("SETTING", "ALL_Step");
-        } 
-
-   msecs(1000);
-}
-
-
 int main(void) {
     setup();
     int dir = 0;
     msecs(50);
-    set = 8;  // run all steps
-     
+    
+    
     while(1){
         run = set;
         dir = !dir;  
-        
-            if (run == 1){
-                msecs(500);           
-                LCD_SpecialPrint("FullStep", "RUNNING ");
-                full_Step(dir, 200, 5000);
-                LCD_SpecialPrint("FullStep", "FINISHED");                
-            }            
-            if (run == 2){
-                msecs(500);           
-                LCD_SpecialPrint("half_Step", "RUNNING ");
-                half_Step(dir, 2 *200, 3600);
-                LCD_SpecialPrint("half_Step", "FINISHED");                
-            }
-            if (run == 3){
-                msecs(500);           
-                LCD_SpecialPrint("quarter_Step", "RUNNING ");
-                quarter_Step(dir, 4 *200, 2500);
-                LCD_SpecialPrint("quarter_Step", "FINISHED");                
-            }
-            if (run ==4){
-                msecs(500);           
-                LCD_SpecialPrint("eighth_Step", "RUNNING ");
-                eighth_Step(dir, 8*200, 1600);
-                LCD_SpecialPrint("eighth_Step", "FINISHED");                
-            }
-            if (run == 5){
-                msecs(500);           
-                LCD_SpecialPrint("16th_Step", "RUNNING ");
-                sixteenth_Step(dir, 16 *200, 800);
-                LCD_SpecialPrint("16th_Step", "FINISHED");                
-            }            
-            if (run == 6){
-                LCD_SpecialPrint("32ndStep", "RUNNING ");
-                thirtieth_Step(dir, 32 *200, 300);
-                LCD_SpecialPrint("32ndStep","FINISHED");
-                msecs(500);
-            }               
-            if (run == 7){
-                LCD_SpecialPrint("FncyStep", "RUNNING ");
-                fancy_Step(dir, (long long)10*32*200, 5, 1, 2, 2*32, 250 ,17, 260);
-                LCD_SpecialPrint("FncyStep","FINISHED");
-                msecs(500);
-            }                 
-            if (run == 8){
-                LCD_SpecialPrint("FullStep", "RUNNING ");
-                full_Step(dir, 200, 5000);
-                LCD_SpecialPrint("FullStep", "FINISHED");
-                msecs(500);
+        if (run == 1){
+            msecs(500);           
+            LCD_SpecialPrint("FullStep", "RUNNING ");
+            full_Step(dir, 200, 5000);
+            LCD_SpecialPrint("FullStep", "FINISHED");                
+        }            
+        if (run == 2){
+            msecs(500);           
+            LCD_SpecialPrint("1:2_Step", "RUNNING ");
+            half_Step(dir, 2 *200, 3600);
+            LCD_SpecialPrint("1:2_Step", "FINISHED");                
+        }
+        if (run == 3){
+            msecs(500);           
+            LCD_SpecialPrint("1:4_Step", "RUNNING ");
+            quarter_Step(dir, 4 *200, 2500);
+            LCD_SpecialPrint("1:4_Step", "FINISHED");                
+        }
+        if (run ==4){
+            msecs(500);           
+            LCD_SpecialPrint("1:8_Step", "RUNNING ");
+            eighth_Step(dir, 8*200, 1600);
+            LCD_SpecialPrint("1:8_Step", "FINISHED");                
+        }
+        if (run == 5){
+            msecs(500);           
+            LCD_SpecialPrint("16thStep", "RUNNING ");
+            sixteenth_Step(dir, 16 *200, 800);
+            LCD_SpecialPrint("16thStep", "FINISHED");                
+        }            
+        if (run == 6){
+            LCD_SpecialPrint("32ndStep", "RUNNING ");
+            thirtieth_Step(dir, 32 *200, 300);
+            LCD_SpecialPrint("32ndStep","FINISHED");
+            msecs(500);
+        }               
+        if (run == 7){
+            LCD_SpecialPrint("FncyStep", "RUNNING ");
+            fancy_Step(dir, (long long)5*32*200, 5, 1, 2, 2*32, 250 ,17, 300);
+            LCD_SpecialPrint("FncyStep","FINISHED");
+            msecs(500);
+        }                 
+        if (run == 8){
+            LCD_SpecialPrint("FullStep", "RUNNING ");
+            full_Step(dir, 200, 5000);
+            LCD_SpecialPrint("FullStep", "FINISHED");
+            msecs(500);
 
-                LCD_SpecialPrint("HalfStep", "RUNNING ");
-                half_Step(dir, 2 *200, 3600);
-                LCD_SpecialPrint("HalfStep", "FINISHED");
-                msecs(500);
+            LCD_SpecialPrint("HalfStep", "RUNNING ");
+            half_Step(dir, 2 *200, 3600);
+            LCD_SpecialPrint("HalfStep", "FINISHED");
+            msecs(500);
 
-                LCD_SpecialPrint("4th Step", "RUNNING ");
-                quarter_Step(dir, 4 *200, 2500);
-                LCD_SpecialPrint("4th Step","FINISHED");
-                msecs(500);
+            LCD_SpecialPrint("4th Step", "RUNNING ");
+            quarter_Step(dir, 4 *200, 2500);
+            LCD_SpecialPrint("4th Step","FINISHED");
+            msecs(500);
 
-                LCD_SpecialPrint("8th Step", "RUNNING ");
-                eighth_Step(dir, 8*200, 1600);
-                LCD_SpecialPrint("8th Step","FINISHED");
-                msecs(500);
+            LCD_SpecialPrint("8th Step", "RUNNING ");
+            eighth_Step(dir, 8*200, 1600);
+            LCD_SpecialPrint("8th Step","FINISHED");
+            msecs(500);
 
-                LCD_SpecialPrint("16thStep", "RUNNING ");
-                sixteenth_Step(dir, 16 *200, 800);
-                LCD_SpecialPrint("16thStep","FINISHED");
-                msecs(500);
+            LCD_SpecialPrint("16thStep", "RUNNING ");
+            sixteenth_Step(dir, 16 *200, 800);
+            LCD_SpecialPrint("16thStep","FINISHED");
+            msecs(500);
 
-                LCD_SpecialPrint("32ndStep", "RUNNING ");
-                thirtieth_Step(dir, 32 *200, 300);
-                LCD_SpecialPrint("32ndStep","FINISHED");
-                msecs(500);
+            LCD_SpecialPrint("32ndStep", "RUNNING ");
+            thirtieth_Step(dir, 32 *200, 300);
+            LCD_SpecialPrint("32ndStep","FINISHED");
+            msecs(500);
 
-                LCD_SpecialPrint("FncyStep", "RUNNING ");
-                fancy_Step(dir, (long long)5*32*200, 5, 1, 2, 2*32, 300 ,17, 17);
-                fancy_Step(dir, (long long)10*32*200, 5, 1, 2, 128, 17 ,17, 300);
-                LCD_SpecialPrint("FncyStep","FINISHED");
-                msecs(500);
-            }      
+            LCD_SpecialPrint("FncyStep", "RUNNING ");
+            fancy_Step(dir, (long long)5*32*200, 5, 1, 2, 2*32, 250 ,17, 300);
+            LCD_SpecialPrint("FncyStep","FINISHED");
+            msecs(500);
+        }      
     }
     return 0;
 }
+
 
 
