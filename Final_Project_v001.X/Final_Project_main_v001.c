@@ -42,7 +42,7 @@ void setup(void){
 
 int main(void) {
     setup();
-    int dir = 0;
+    int dir = 1;
     msecs(50);
     
     
@@ -98,7 +98,7 @@ int main(void) {
             msecs(500);
 
             LCD_SpecialPrint("HalfStep", "RUNNING ");
-            half_Step(dir, 2 *200, 3600);
+            half_Step(!dir, 2 *200, 3600);
             LCD_SpecialPrint("HalfStep", "FINISHED");
             msecs(500);
 
@@ -108,7 +108,7 @@ int main(void) {
             msecs(500);
 
             LCD_SpecialPrint("8th Step", "RUNNING ");
-            eighth_Step(dir, 8*200, 1600);
+            eighth_Step(!dir, 8*200, 1600);
             LCD_SpecialPrint("8th Step","FINISHED");
             msecs(500);
 
@@ -118,17 +118,18 @@ int main(void) {
             msecs(500);
 
             LCD_SpecialPrint("32ndStep", "RUNNING ");
-            thirtieth_Step(dir, 32 *200, 300);
+            thirtieth_Step(!dir, 32 *200, 300);
             LCD_SpecialPrint("32ndStep","FINISHED");
             msecs(500);
 
             LCD_SpecialPrint("FncyStep", "RUNNING ");
-            fancy_Step(dir, (long long)5*32*200, 5, 1, 2, 2*32, 250 ,17, 300);
+            fancy_Step(dir, (long long)11*16*200,5, 1, 5, 2*16, 350 ,25, 300);
             LCD_SpecialPrint("FncyStep","FINISHED");
             msecs(500);
         }      
     }
     return 0;
+    
 }
 
 

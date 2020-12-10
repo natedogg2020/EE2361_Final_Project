@@ -30,7 +30,13 @@ int NUM_FAULTS = 0;
 unsigned int set = 1;
 unsigned int run = 1;
 
-
+/* Function:        DRV8825_Setup 
+ * Description:     This is the setup function to initialize all required outputs,
+ *                  Timers, Input Capture Interrupts, and anything else necessary
+ *                  for the DRV8825 library to have full functionality.
+ * Parameters:      None
+ * Output:          None
+ */ 
 void DRV8825_Setup(void){
 //DRV8825 Initializations
     TRISB = 0b0000000000010011;  //and port B to outputs
@@ -98,6 +104,7 @@ void DRV8825_Setup(void){
  * Parameters:      
  *      top     : character array which will be displayed on the top row of LCD
  *      bottom  : char array that'll be displayed on the bottom row of LCD
+ * Output:          None
  */ 
 void LCD_SpecialPrint(const char top[], const char bottom[]){
     lcd_setCursor(0, 0);
@@ -111,6 +118,7 @@ void LCD_SpecialPrint(const char top[], const char bottom[]){
  * Description:     delays 'n' amount of milliseconds
  * Parameters:      
  *      n    : determines amount of milliseconds to delay
+ * Output:          None
  */ 
 void msecs(int n){
     TMR1 = 0x00; //Clear T1 register
@@ -128,6 +136,7 @@ void msecs(int n){
  *                  adds an additional 1.25us to the input 'us' delay
  * Parameters:      
  *      us    : determines amount of microseconds ('us' + 1.25 microsec) to delay
+ * Output:          None
  */
 void delay_us(unsigned int us){
     while(us-- >0){
@@ -139,15 +148,16 @@ void delay_us(unsigned int us){
 
 /* Function:        setMode 
  * Original Author: Nathaniel McKelvey
- * Description:     setMode sets the DRV8825 with variable micro-stepping
- *      mode = 0 :  Full Stepping
- *             1 :  Half Stepping
- *             2 :  1/4th Stepping
- *             3 :  1/8th Stepping
- *             4 :  1/16th Stepping
- *             5 :  1/32nd Stepping
+ * Description:     setMode sets the DRV8825 with variable micro-stepping:
+ *                      mode = 0 :  Full Stepping
+ *                             1 :  Half Stepping
+ *                             2 :  1/4th Stepping
+ *                             3 :  1/8th Stepping
+ *                             4 :  1/16th Stepping
+ *                             5 :  1/32nd Stepping
  * Parameters:      
  *      mode    : Determines the type of micro-stepping used
+ * Output:          None
  */
 void setMode(unsigned char mode){
     if(mode <8 ){   //Actually good mode number
@@ -157,6 +167,14 @@ void setMode(unsigned char mode){
     }
 }
 
+/* Function:        full_Step
+ * Description:     Drives the DRV8825 driver with 1:1 stepping
+ * Parameters:
+ *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
+ *      steps   : Number of steps to rotate
+ *      delay   : delay between steps in microseconds. 2*delay is the period
+ * Output:          None
+ */
 void full_Step(int dir, int steps, int delay){
      _RB15 = dir;                //Set the direction pin
     setMode(0);
@@ -177,18 +195,19 @@ void full_Step(int dir, int steps, int delay){
  *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
  *      steps   : Number of steps to rotate
  *      delay   : delay between steps in microseconds. 2*delay is the period
+ * Output:          None
  */
 void half_Step(int dir,int steps, int delay){
-      _RB15 = dir; 
+    _RB15 = dir; 
     setMode(1);
     int i = 0;
-     while(i<steps){
-         _RB14 = 1;
-         delay_us(delay);
-         _RB14 = 0;
-         delay_us(delay);
-         i++;
-     }
+    while(i<steps){
+        _RB14 = 1;
+        delay_us(delay);
+        _RB14 = 0;
+        delay_us(delay);
+        i++;
+    }
 }
 
 /* Function:        quarter_Step 
@@ -198,18 +217,19 @@ void half_Step(int dir,int steps, int delay){
  *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
  *      steps   : Number of steps to rotate
  *      delay   : delay between steps in microseconds. 2*delay is the period
+ * Output:          None
  */
 void quarter_Step(int dir, int steps, int delay){
-     _RB15 = dir;                //Set the direction pin
+    _RB15 = dir;                //Set the direction pin
     setMode(2);
     int i = 0;
-     while(i<steps){
-         _RB14 = 1;
-         delay_us(delay);
-         _RB14 = 0;
-         delay_us(delay);
-         i++;
-     } 
+    while(i<steps){
+        _RB14 = 1;
+        delay_us(delay);
+        _RB14 = 0;
+        delay_us(delay);
+        i++;
+    } 
 }
 
 /* Function:        eighth_Step
@@ -219,18 +239,19 @@ void quarter_Step(int dir, int steps, int delay){
  *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
  *      steps   : Number of steps to rotate
  *      delay   : delay between steps in microseconds. 2*delay is the period
+ * Output:          None
  */
 void eighth_Step(int dir, int steps, int delay){
     _RB15 = dir;
-     setMode(3);
+    setMode(3);
     int i = 0;
-     while(i<steps){
-         _RB14 = 1;
-         delay_us(delay);
-         _RB14 = 0;
-         delay_us(delay);
-         i++;
-     }
+    while(i<steps){
+        _RB14 = 1;
+        delay_us(delay);
+        _RB14 = 0;
+        delay_us(delay);
+        i++;
+    }
 }
 
 /* Function:        sixteenth_Step 
@@ -240,18 +261,19 @@ void eighth_Step(int dir, int steps, int delay){
  *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
  *      steps   : Number of steps to rotate
  *      delay   : delay between steps in microseconds. 2*delay is the period
+ * Output:          None
  */
 void sixteenth_Step(int dir, int steps, int delay){
     _RB15 = dir;                //Set the direction pin
     setMode(4);
     int i = 0;
-     while(i<steps){
-         _RB14 = 1;
-         delay_us(delay);
-         _RB14 = 0;
-         delay_us(delay);
-         i++;
-     } 
+    while(i<steps){
+        _RB14 = 1;
+        delay_us(delay);
+        _RB14 = 0;
+        delay_us(delay);
+        i++;
+    } 
 }
 
 /* Function:        thirtieth_Step 
@@ -261,18 +283,19 @@ void sixteenth_Step(int dir, int steps, int delay){
  *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
  *      steps   : Number of steps to rotate
  *      delay   : delay between steps in microseconds. 2*delay is the period
+ * Output:          None
  */
 void thirtieth_Step(int dir, int steps, int delay){
     _RB15 = dir;                //Set the direction pin
     setMode(5);
     int i = 0;
-     while(i<steps){
-         _RB14 = 1;
-         delay_us(delay);
-         _RB14 = 0;
-         delay_us(delay);
-         i++;
-     } 
+    while(i<steps){
+        _RB14 = 1;
+        delay_us(delay);
+        _RB14 = 0;
+        delay_us(delay);
+        i++;
+    } 
 }
 
 /* Function:        fancy_Step 
@@ -282,7 +305,7 @@ void thirtieth_Step(int dir, int steps, int delay){
  * Parameters:      
  *      dir     ---     : Determines the direction of rotation (1 for CW, 0 for CCW)
  *      steps   ---     : Number of steps to rotate
- *      mode    ---     : Sets the steping mode. SetMode states:
+ *      mode    ---     : Sets the stepping mode. SetMode states:
  *                          mode =  0 :  Full Stepping
  *                                  1 :  Half Stepping
  *                                  2 :  1/4th Stepping
@@ -303,6 +326,7 @@ void thirtieth_Step(int dir, int steps, int delay){
  *      initial_speed   : This is the initial delay (speed or period/2) that the function starts at. 
  *      max_speed       : This is the max speed (smallest delay) that the delay can reach.
  *      end_speed       : This is the target end speed that the function ends with
+ * Output:          None
  */
 void fancy_Step(int dir, long long steps, unsigned char mode, int accel, int decel,
                 unsigned int  mult, int initial_speed, int max_speed,int end_speed){
@@ -313,39 +337,39 @@ void fancy_Step(int dir, long long steps, unsigned char mode, int accel, int dec
     setMode(mode);              //Set microstepping mode
     
     //Start Stepping
-     while(i<steps-1){
-         //Command DRV8825 to step
-         _RB14 = 1;
-         delay_us(speed);
-         _RB14 = 0;
-         //speed-2 to compensate for the time to complete speed calculations
-         delay_us(speed-2); 
-         // speed calculations to determine if speed should be 
-         // increased, decreased, or maintained
-         if(j >= mult){
-            // Make sure the user wants to decelerate
-            if(decel >0){ 
-                //Check if its time to start deceleration, continue acceleration,
-                //or maintain current speed (do nothing)
-                if(((steps - i-1) <= (long long)(j*((end_speed-speed)/decel))) && 
-                   (speed <= end_speed)){ 
-                   //Start decelerating
-                   speed += decel;
-               }else if(speed > max_speed){   
-                    //accelerate
-                    speed -= accel;
+    while(i<steps-1){
+        //Command DRV8825 to step
+        _RB14 = 1;
+        delay_us(speed);
+        _RB14 = 0;
+        //speed-2 to compensate for the time to complete speed calculations
+        delay_us(speed-2); 
+        // speed calculations to determine if speed should be 
+        // increased, decreased, or maintained
+        if(j >= mult){
+           // Make sure the user wants to decelerate
+           if(decel >0){ 
+               //Check if its time to start deceleration, continue acceleration,
+               //or maintain current speed (do nothing)
+               if(((steps - i-1) <= (long long)(j*((end_speed-speed)/decel))) && 
+                  (speed <= end_speed)){ 
+                    //Start decelerating
+                    speed += decel;
+                }else if(speed > max_speed){   
+                   //accelerate
+                   speed -= accel;
                 }
-            }else if(speed > max_speed){   
-                //accelerate
-                speed -= accel;
-            }  //else, keep the same speed
-            
-            j = 1; // Reset j, since mult has been reached.
-         }
-        
-         i++;
-         j++;
-     }
+           }else if(speed > max_speed){   
+               //accelerate
+               speed -= accel;
+           }  //else, keep the same speed
+
+           j = 1; // Reset j, since mult has been reached.
+        }
+
+        i++;
+        j++;
+    }
     //Step one last time with less delay at the end to accommodate for return time
     _RB14 = 1;
     delay_us(speed);
@@ -357,8 +381,10 @@ void fancy_Step(int dir, long long steps, unsigned char mode, int accel, int dec
 /* Function:        _IC1Interrupt 
  * Original Author: Nathaniel McKelvey
  * Description:     _IC1Interrupt is utilized to halt the DRV8825 if the MAX_FAULTS
- *                  is reached. If the MAX_FAULTS isn't reached, the DRV8825
- * Parameters: None
+ *                  is reached. If the MAX_FAULTS isn't reached, the DRV8825 is
+ *                  reset and resumes normal operation.
+ * Parameters:      None
+ * Output:          None
  */
 void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void){              
     
@@ -388,39 +414,46 @@ void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void){
 }
 
 
-
+/* Function:        _IC1Interrupt 
+ * Original Author: Hai Nguyen
+ * Description:     _IC2Interrupt is utilized to change the working mode of the
+ *                  DRV8825 by watching for a button press (active high) on the 
+ *                  RP5 pin. We can choose one of eight different modes.
+ * Parameters:      None
+ * Output:          None
+ */
 void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
-    set++;
-    if(set == 9)           // We can choose one in eight different modes
+    set++;          // Increment set, so the next mode is used.
+    if(set == 9)    // Reset set to 1 if previous mode was the last.       
         set = 1;
-   
+    
+    //Displaying the setting mode
     if(set == 1){
-         LCD_SpecialPrint("SETTING ", "1:1_step");
-        //Displaying the setting mode
+        LCD_SpecialPrint("SETTING ", "1:1_step");
     }
     if(set == 2){
-         LCD_SpecialPrint("SETTING ", "1/2_step");
+        LCD_SpecialPrint("SETTING ", "1/2_step");
     }
     if(set == 3){
-         LCD_SpecialPrint("SETTING ", "Qtr_step");
+        LCD_SpecialPrint("SETTING ", "Qtr_step");
     }
     if(set == 4){
-         LCD_SpecialPrint("SETTING ", "8th_step");
+        LCD_SpecialPrint("SETTING ", "8th_step");
     }
     if(set == 5){
-         LCD_SpecialPrint("SETTING ", "16thStep");
+        LCD_SpecialPrint("SETTING ", "16thStep");
     }  
     if(set == 6){
-         LCD_SpecialPrint("SETTING ", "32ndStep");
+        LCD_SpecialPrint("SETTING ", "32ndStep");
     } 
     if(set == 7){
-         LCD_SpecialPrint("SETTING ", "FncyStep");
+        LCD_SpecialPrint("SETTING ", "FncyStep");
     }  
     if(set == 8){
-         LCD_SpecialPrint("SETTING ", "ALL_Step");
+        LCD_SpecialPrint("SETTING ", "ALL_Step");
     } 
 
-    msecs(1000);   //Wait 1_sec for setting is comlete
+    msecs(1000);   //Wait 1_sec for setting is complete
     _IC2IF = 0;  //Reset Flag at the end to help debounce the button
 }
 

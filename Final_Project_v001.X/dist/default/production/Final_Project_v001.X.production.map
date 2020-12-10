@@ -5,11 +5,11 @@ Tool Name:
 
 Command:
   -p24FJ64GA002 \
-  --mdfp=C:/Users/Nate/.mchp_packs/Microchip/PIC24F-GA-GB_DFP/1.1.74/xc16 \
+  --mdfp=C:/Users/luv2s/.mchp_packs/Microchip/PIC24F-GA-GB_DFP/1.1.74/xc16 \
   -o \
   dist/default/production/Final_Project_v001.X.production.elf \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/.. \
-  -LC:/Users/Nate/.mchp_packs/Microchip/PIC24F-GA-GB_DFP/1.1.74/xc16/bin/../support/PIC24F/gld \
+  -LC:/Users/luv2s/.mchp_packs/Microchip/PIC24F-GA-GB_DFP/1.1.74/xc16/bin/../support/PIC24F/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../lib \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/PIC24E/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/PIC24F/gld \
@@ -70,10 +70,10 @@ section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0x1de           0x2cd  (717)
 .const                       0x3de               0x106           0x189  (393)
-.text                        0x4e4               0x7ee           0xbe5  (3045)
-.dinit                       0xcd2                0x12            0x1b  (27)
+.text                        0x4e4               0x806           0xc09  (3081)
+.dinit                       0xcea                0x12            0x1b  (27)
 
-                 Total "program" memory used (bytes):         0x1056  (4182) 6%
+                 Total "program" memory used (bytes):         0x107a  (4218) 6%
 
 
 "data" Memory  [Origin = 0x800, Length = 0x2000]
@@ -136,18 +136,18 @@ External Symbols in Program Memory (by address):
                   0x0007d4                  _fancy_Step
                   0x000902                  _setup
                   0x000918                  _main
-                  0x000af0                  _LCD_Setup
-                  0x000b08                  _lcd_cmd
-                  0x000b56                  _lcd_init
-                  0x000ba8                  _lcd_setCursor
-                  0x000bde                  _lcd_printChar
-                  0x000c2e                  _lcd_printStr
-                  0x000cc8                  _move
+                  0x000b08                  _LCD_Setup
+                  0x000b20                  _lcd_cmd
+                  0x000b6e                  _lcd_init
+                  0x000bc0                  _lcd_setCursor
+                  0x000bf6                  _lcd_printChar
+                  0x000c46                  _lcd_printStr
+                  0x000ce0                  _move
 
 External Symbols in Program Memory (by name):
 
                   0x0004e4                  _DRV8825_Setup
-                  0x000af0                  _LCD_Setup
+                  0x000b08                  _LCD_Setup
                   0x0005a4                  _LCD_SpecialPrint
                   0x0003cc                  __DefaultInterrupt
                   0x0002c8                  __IC1Interrupt
@@ -161,13 +161,13 @@ External Symbols in Program Memory (by name):
                   0x0007d4                  _fancy_Step
                   0x000660                  _full_Step
                   0x00069e                  _half_Step
-                  0x000b08                  _lcd_cmd
-                  0x000b56                  _lcd_init
-                  0x000bde                  _lcd_printChar
-                  0x000c2e                  _lcd_printStr
-                  0x000ba8                  _lcd_setCursor
+                  0x000b20                  _lcd_cmd
+                  0x000b6e                  _lcd_init
+                  0x000bf6                  _lcd_printChar
+                  0x000c46                  _lcd_printStr
+                  0x000bc0                  _lcd_setCursor
                   0x000918                  _main
-                  0x000cc8                  _move
+                  0x000ce0                  _move
                   0x0005c2                  _msecs
                   0x0006dc                  _quarter_Step
                   0x00060c                  _setMode
@@ -253,11 +253,11 @@ __CONFIG1
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x1cef
+.debug_info       0x000000       0x1cfb
  *(.debug_info)
- .debug_info      0x000000       0x148a build/default/production/DRV8825_main_v001.o
- .debug_info      0x00148a        0x342 build/default/production/Final_Project_main_v001.o
- .debug_info      0x0017cc        0x523 build/default/production/mckel042_LCD_v001.o
+ .debug_info      0x000000       0x1494 build/default/production/DRV8825_main_v001.o
+ .debug_info      0x001494        0x343 build/default/production/Final_Project_main_v001.o
+ .debug_info      0x0017d7        0x524 build/default/production/mckel042_LCD_v001.o
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev     0x000000        0x417
@@ -266,11 +266,11 @@ __CONFIG1
  .debug_abbrev    0x0001ef        0x116 build/default/production/Final_Project_main_v001.o
  .debug_abbrev    0x000305        0x112 build/default/production/mckel042_LCD_v001.o
 
-.debug_line       0x000000        0x4f8
+.debug_line       0x000000        0x503
  *(.debug_line)
- .debug_line      0x000000        0x21f build/default/production/DRV8825_main_v001.o
- .debug_line      0x00021f        0x16c build/default/production/Final_Project_main_v001.o
- .debug_line      0x00038b        0x16d build/default/production/mckel042_LCD_v001.o
+ .debug_line      0x000000        0x228 build/default/production/DRV8825_main_v001.o
+ .debug_line      0x000228        0x16d build/default/production/Final_Project_main_v001.o
+ .debug_line      0x000395        0x16e build/default/production/mckel042_LCD_v001.o
 
 .debug_frame      0x000000        0x310
  *(.debug_frame)
@@ -951,7 +951,7 @@ __c30_signature
  .const             0x83de         0x9a build/default/production/DRV8825_main_v001.o
  .const             0x8478         0x6c build/default/production/Final_Project_main_v001.o
 
-.text             0x0004e4        0x7ee
+.text             0x0004e4        0x806
  .text            0x0004e4        0x41e build/default/production/DRV8825_main_v001.o
                   0x0004e4                  _DRV8825_Setup
                   0x0005a4                  _LCD_SpecialPrint
@@ -965,17 +965,17 @@ __c30_signature
                   0x000758                  _sixteenth_Step
                   0x000796                  _thirtieth_Step
                   0x0007d4                  _fancy_Step
- .text            0x000902        0x1ee build/default/production/Final_Project_main_v001.o
+ .text            0x000902        0x206 build/default/production/Final_Project_main_v001.o
                   0x000902                  _setup
                   0x000918                  _main
- .text            0x000af0        0x1e2 build/default/production/mckel042_LCD_v001.o
-                  0x000af0                  _LCD_Setup
-                  0x000b08                  _lcd_cmd
-                  0x000b56                  _lcd_init
-                  0x000ba8                  _lcd_setCursor
-                  0x000bde                  _lcd_printChar
-                  0x000c2e                  _lcd_printStr
-                  0x000cc8                  _move
+ .text            0x000b08        0x1e2 build/default/production/mckel042_LCD_v001.o
+                  0x000b08                  _LCD_Setup
+                  0x000b20                  _lcd_cmd
+                  0x000b6e                  _lcd_init
+                  0x000bc0                  _lcd_setCursor
+                  0x000bf6                  _lcd_printChar
+                  0x000c46                  _lcd_printStr
+                  0x000ce0                  _move
 
-.dinit            0x000cd2         0x12
- .dinit           0x000cd2         0x12 data_init
+.dinit            0x000cea         0x12
+ .dinit           0x000cea         0x12 data_init
