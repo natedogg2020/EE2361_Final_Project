@@ -7,7 +7,7 @@
 
 #include "xc.h"
 #include "DRV8825_main_v001.h"
-#include "mckel042_LCD_v001.h"
+
 
 
 // CW1: FLASH CONFIGURATION WORD 1 (see PIC24 Family Reference Manual 24.1)
@@ -28,7 +28,7 @@
 
 #pragma config POSCMOD = NONE
 
-void LCD_SpecialPrint(const char top[], const char bottom[]);
+
 
 void setup(void){
     CLKDIVbits.RCDIV = 0;  //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
@@ -38,12 +38,7 @@ void setup(void){
     LCD_Setup();
 }
 
-void LCD_SpecialPrint(const char top[], const char bottom[]){
-    lcd_setCursor(0, 0);
-    lcd_printStr(top);
-    lcd_setCursor(0, 1);
-    lcd_printStr(bottom);
-}
+
 
 int main(void) {
     setup();

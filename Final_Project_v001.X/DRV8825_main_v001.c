@@ -5,8 +5,9 @@
  * Created on November 12, 2020
  */
 
-#include "xc.h"                 //For the _IC1Interrupt
+#include "xc.h"                 //For the _IC1Interrupt and _IC2Interrupt
 #include "DRV8825_main_v001.h"
+#include "mckel042_LCD_v001.h"
 
     /*
 <<<<<< PIC Port |   DRV8825 Port/Pin        |   Active High/Low >>>>>>
@@ -86,6 +87,23 @@ void DRV8825_Setup(void){
         __builtin_write_OSCCONL(OSCCON & 0xbf); // unlock PPS
     RPINR7bits.IC2R = 5;   // Use pin RP5 for IC2
     __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
+}
+
+/* Function:        LCD_SpecialPrint 
+ * Original Author: Nathaniel McKelvey
+ * Description:     Prints a string to the top and bottom row of the LCD. Note
+ *                  that the display is an 8x2 character display, so the words
+ *                  will be cutoff after the 8th character, unless the display
+ *                  is shifted using the move() LCD function
+ * Parameters:      
+ *      top     : character array which will be displayed on the top row of LCD
+ *      bottom  : char array that'll be displayed on the bottom row of LCD
+ */ 
+void LCD_SpecialPrint(const char top[], const char bottom[]){
+    lcd_setCursor(0, 0);
+    lcd_printStr(top);
+    lcd_setCursor(0, 1);
+    lcd_printStr(bottom);
 }
 
 /* Function:        msecs 

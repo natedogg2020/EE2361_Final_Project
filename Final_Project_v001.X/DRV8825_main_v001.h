@@ -28,6 +28,7 @@ extern "C" {
     
     //DRV8825 Library Functions
     void DRV8825_Setup(void);
+    void LCD_SpecialPrint(const char top[], const char bottom[]);
     void msecs(int);
     void delay_us(unsigned int);
     void setMode(unsigned char);
