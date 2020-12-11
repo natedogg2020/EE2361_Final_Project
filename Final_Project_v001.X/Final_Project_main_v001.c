@@ -31,9 +31,6 @@
 
 
 void setup(void){
-    CLKDIVbits.RCDIV = 0;  //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
-    AD1PCFG = 0x9fff;            //sets all pins to digital I/O
-    
     DRV8825_Setup();
     LCD_Setup();
 }
@@ -41,93 +38,114 @@ void setup(void){
 
 
 int main(void) {
-    setup();
-    int dir = 1;
-    msecs(50);
-    
+    setup();        // Setup all peripherals
+    run = 8;        // Initially Start with running with all operations
+    int dir = 0;    // Set direction of stepper motor (1 or 0/HIGH or LOW)
+    msecs(50);      // Wait 50 milliseconds to allow DRV8825 to catch-up initially
     
     while(1){
-        run = set;
-        dir = !dir;  
+        // Drive Stepper Motor with certain settings given the 'run' setting.
+        // See _IC2Interrupt in DRV_main_v001.c to see how this is changed.
         if (run == 1){
-            msecs(500);           
-            LCD_SpecialPrint("FullStep", "RUNNING ");
-            full_Step(dir, 200, 5000);
-            LCD_SpecialPrint("FullStep", "FINISHED");                
-        }            
-        if (run == 2){
-            msecs(500);           
-            LCD_SpecialPrint("1:2_Step", "RUNNING ");
+            LCD_SpecialPrint("FullStep", "RUNNING ");   // Display Stepping Status Update (DSSU)
+            // Step 200 steps (1 rotation) with a ~10,001.25us period per step using 1:1 microstepping.
+            full_Step(dir, 200, 5000);   
+            LCD_SpecialPrint("FullStep", "FINISHED");   // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
+        }else if (run == 2){
+            LCD_SpecialPrint("1:2_Step", "RUNNING ");   // DSSU
+            // Step 400 steps (1 rotation) with a ~7,202.5us period per step using 1:2 microstepping.
             half_Step(dir, 2 *200, 3600);
-            LCD_SpecialPrint("1:2_Step", "FINISHED");                
-        }
-        if (run == 3){
-            msecs(500);           
-            LCD_SpecialPrint("1:4_Step", "RUNNING ");
+            LCD_SpecialPrint("1:2_Step", "FINISHED");   // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
+        }else if (run == 3){
+            LCD_SpecialPrint("1:4_Step", "RUNNING ");   // DSSU
+            // Step 800 steps (1 rotation) with a ~5,002.5us period per step using 1:4 microstepping.
             quarter_Step(dir, 4 *200, 2500);
-            LCD_SpecialPrint("1:4_Step", "FINISHED");                
-        }
-        if (run ==4){
-            msecs(500);           
-            LCD_SpecialPrint("1:8_Step", "RUNNING ");
+            LCD_SpecialPrint("1:4_Step", "FINISHED");   // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
+        }else if (run == 4){
+            LCD_SpecialPrint("1:8_Step", "RUNNING ");   // DSSU
+            // Step 1,600 steps (1 rotation) with a ~3,202.5us period per step using 1:8 microstepping.
             eighth_Step(dir, 8*200, 1600);
-            LCD_SpecialPrint("1:8_Step", "FINISHED");                
-        }
-        if (run == 5){
-            msecs(500);           
-            LCD_SpecialPrint("16thStep", "RUNNING ");
+            LCD_SpecialPrint("1:8_Step", "FINISHED");   // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
+        }else if (run == 5){
+            LCD_SpecialPrint("16thStep", "RUNNING ");   // DSSU
+            // Step 3,200 steps (1 rotation) with a ~1,602.5us period per step using 1:16 microstepping.
             sixteenth_Step(dir, 16 *200, 800);
-            LCD_SpecialPrint("16thStep", "FINISHED");                
-        }            
-        if (run == 6){
-            LCD_SpecialPrint("32ndStep", "RUNNING ");
+            LCD_SpecialPrint("16thStep", "FINISHED");   // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
+        }else if (run == 6){
+            LCD_SpecialPrint("32ndStep", "RUNNING ");   // DSSU
+            // Step 6,400 steps (1 rotation) with a ~302.5us period per step using 1:32 microstepping.
             thirtieth_Step(dir, 32 *200, 300);
-            LCD_SpecialPrint("32ndStep","FINISHED");
-            msecs(500);
-        }               
-        if (run == 7){
-            LCD_SpecialPrint("FncyStep", "RUNNING ");
+            LCD_SpecialPrint("32ndStep","FINISHED");    // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
+        }else if (run == 7){
+            LCD_SpecialPrint("FncyStep", "RUNNING ");   // DSSU
+            /* Step 32,000 steps (5 rotations) using 1:32 microstepping. 
+             * Acceleration of ~2us (Input Parameter (IP) of 1) per step, deceleration of 
+             * ~4us (IP of 2) per step, with a multiplier of 64 (IP of 2*32) to
+             * further slow the accel/decel. Start Speed period is ~502.5us (IP of 250),
+             * Max Speed period is ~36.5us (IP of 17), and End Speed is 602.5us
+             * (IP of 300).
+             */
             fancy_Step(dir, (long long)5*32*200, 5, 1, 2, 2*32, 250 ,17, 300);
-            LCD_SpecialPrint("FncyStep","FINISHED");
-            msecs(500);
-        }                 
-        if (run == 8){
-            LCD_SpecialPrint("FullStep", "RUNNING ");
+            LCD_SpecialPrint("FncyStep","FINISHED");    // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
+        }else{  //run == 8
+            LCD_SpecialPrint("FullStep", "RUNNING ");   // Display Stepping Status Update (DSSU)
+            // Step 200 steps (1 rotation) with a ~10,001.25us period per step using 1:1 microstepping.
             full_Step(dir, 200, 5000);
-            LCD_SpecialPrint("FullStep", "FINISHED");
-            msecs(500);
+            LCD_SpecialPrint("FullStep", "FINISHED");   // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
 
-            LCD_SpecialPrint("HalfStep", "RUNNING ");
+            LCD_SpecialPrint("HalfStep", "RUNNING ");   // DSSU
+            // Step 400 steps (1 rotation) with a ~7,202.5us period per step using 1:2 microstepping.
             half_Step(!dir, 2 *200, 3600);
-            LCD_SpecialPrint("HalfStep", "FINISHED");
-            msecs(500);
+            LCD_SpecialPrint("HalfStep", "FINISHED");   // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
 
-            LCD_SpecialPrint("4th Step", "RUNNING ");
+            LCD_SpecialPrint("4th Step", "RUNNING ");   // DSSU
+            // Step 800 steps (1 rotation) with a ~5,002.5us period per step using 1:4 microstepping.
             quarter_Step(dir, 4 *200, 2500);
-            LCD_SpecialPrint("4th Step","FINISHED");
-            msecs(500);
+            LCD_SpecialPrint("4th Step","FINISHED");    // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
 
-            LCD_SpecialPrint("8th Step", "RUNNING ");
+            LCD_SpecialPrint("8th Step", "RUNNING ");   // DSSU
+            // Step 1,600 steps (1 rotation) with a ~3,202.5us period per step using 1:8 microstepping.
             eighth_Step(!dir, 8*200, 1600);
-            LCD_SpecialPrint("8th Step","FINISHED");
-            msecs(500);
+            LCD_SpecialPrint("8th Step","FINISHED");    // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
 
-            LCD_SpecialPrint("16thStep", "RUNNING ");
+            LCD_SpecialPrint("16thStep", "RUNNING ");   // DSSU
+            // Step 3,200 steps (1 rotation) with a ~1,602.5us period per step using 1:16 microstepping.
             sixteenth_Step(dir, 16 *200, 800);
-            LCD_SpecialPrint("16thStep","FINISHED");
-            msecs(500);
+            LCD_SpecialPrint("16thStep","FINISHED");    // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
 
-            LCD_SpecialPrint("32ndStep", "RUNNING ");
+            LCD_SpecialPrint("32ndStep", "RUNNING ");   // DSSU
+            // Step 6,400 steps (1 rotation) with a ~302.5us period per step using 1:32 microstepping.
             thirtieth_Step(!dir, 32 *200, 300);
-            LCD_SpecialPrint("32ndStep","FINISHED");
-            msecs(500);
+            LCD_SpecialPrint("32ndStep","FINISHED");    // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
 
-            LCD_SpecialPrint("FncyStep", "RUNNING ");
-            fancy_Step(dir, (long long)11*16*200,5, 1, 5, 2*16, 350 ,25, 300);
-            LCD_SpecialPrint("FncyStep","FINISHED");
-            msecs(500);
-        }      
-    }
+            LCD_SpecialPrint("FncyStep", "RUNNING ");   // DSSU
+            /* Step 35,200 steps (5.5 rotations) using 1:32 microstepping 
+             * (Input Parameter (IP) of 5). Acceleration of ~2us (IP of 1) per step, 
+             * deceleration of ~10us (IP of 5) per step, with a multiplier of 32 
+             * (IP of 2*16) to further slow the accel/decel. Start Speed period 
+             * is ~502.5us (IP of 250), Max Speed period is ~52.5us (IP of 25), 
+             * and End Speed is 602.5us (IP of 300).
+             */
+            fancy_Step(dir, (long long)11*16*200,5, 1, 5, 2*16, 250 ,25, 300);
+            LCD_SpecialPrint("FncyStep","FINISHED");    // DSSU
+            msecs(500);     // wait half a second to allow user to read LCD message
+        }     
+        
+        dir = !dir;     // Reverse Direction of Stepper Motor  
+    } 
     return 0;
     
 }

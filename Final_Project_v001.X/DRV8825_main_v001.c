@@ -27,7 +27,6 @@ int MAX_FAULTS = 2;      //Disable DRV8825 if Fault is reached n amount of times
 int NUM_FAULTS = 0;
 
 //Globals for IC2 motor control
-unsigned int set = 1;
 unsigned int run = 1;
 
 /* Function:        DRV8825_Setup 
@@ -38,8 +37,10 @@ unsigned int run = 1;
  * Output:          None
  */ 
 void DRV8825_Setup(void){
-//DRV8825 Initializations
-    TRISB = 0b0000000000010011;  //and port B to outputs
+//PIC24 Initializations for DRV8825
+    CLKDIVbits.RCDIV = 0;        // Sets the PIC24 to 16 MHz instruction speed required for timing
+    AD1PCFG = 0x9fff;            // sets all pins to digital I/O
+    TRISB = 0b0000000000000011;  // and port B to outputs, besides RP0,1
     TRISBbits.TRISB15 = 0;          // Output   |   DIR (Direction) pin
     TRISBbits.TRISB14 = 0;          // Output   |   STEP pin 
     TRISBbits.TRISB13 = 0;          // Output   |   (M2) Mode2 Pin 
@@ -49,7 +50,7 @@ void DRV8825_Setup(void){
     TRISBbits.TRISB9 = 0;           // Output   |   Reset Pin  
     TRISBbits.TRISB8 = 0;           // Output   |   Enable Pin
     TRISBbits.TRISB4 = 1;           // Input    |   Fault Pin
-    LATB |= 0xfe00;               //and all used port B to HIGH except RB8 (Enable Pin = 0v)
+    LATB |= 0xfe00;               // set   all used port B to HIGH except RB8 (Enable Pin = 0v)
 
 // Setup T1 for 1 milli-second delay
     T1CON = 0x00; //Stops the Timer1 and reset control reg.
@@ -61,7 +62,7 @@ void DRV8825_Setup(void){
     T1CONbits.TON = 1; //Start T1 
     
 // Input Capture 1/ Timer 2 Setup for Fault Detection
-    RPINR7bits.IC1R = 4;  // assign IC1 to RP4
+    RPINR7bits.IC1R = 4;   // assign IC1 to RP4
     T2CON = 0x0000;        // prescale 1:1,     
     TMR2 = 0x0000;         // initialize to 0    
     PR2 = 0XFFFF;          // max period
@@ -69,7 +70,7 @@ void DRV8825_Setup(void){
     IC1CON = 0x0000;       // Reset IC1    
     IC1CON = 0x0082;       // Turn on Input Capture 1 Module
     /* configure interrupts */       
-    IPC0bits.IC1IP = 4;    // Set module interrupt priority as 1    
+    IPC0bits.IC1IP = 4;    // Set module interrupt priority as 4    
     IFS0bits.IC1IF = 0;    // Clear the IC1 interrupt status flag    
     IEC0bits.IC1IE = 1;    // Enable IC1 interrupts    
     T2CONbits.TON = 1;     // enable Timer2
@@ -78,18 +79,18 @@ void DRV8825_Setup(void){
     //BUTTON  connect RP5_pin
     TMR3 = 0;
     PR3 = 0xfffe;
-    T3CONbits.TCKPS = 0b00;         //prescale value 1:1
-    T3CONbits.TCS = 0b0;            //Internal clock (FOSC/2)
-    T3CONbits.TGATE = 0b0;      //Gated time accumulation disabled (when TCS = 0)
+    T3CONbits.TCKPS = 0b00;     // prescale value 1:1
+    T3CONbits.TCS = 0b0;        // Internal clock (FOSC/2) = 16 MHz
+    T3CONbits.TGATE = 0b0;      // Gated time accumulation disabled (when TCS = 0)
     T3CONbits.TON = 1;  
     
     IC2CONbits.ICTMR = 0;   // Select Timer3 for IC2 Time
     IC2CONbits.ICI = 0b00;  // Interrupt on every capture event
     IC2CONbits.ICM = 0b011; // Generate capture event on every Rising edge
     
-  //  IPC0bits.IC2IP = 3; // Setup IC1 interrupt priority level
-    IFS0bits.IC2IF = 0; // Clear IC1 Interrupt Status Flag
-    IEC0bits.IC2IE = 1; // Enable IC1 interrupt
+  //  IPC0bits.IC2IP = 3; // Setup IC2 interrupt priority level
+    IFS0bits.IC2IF = 0; // Clear IC2 Interrupt Status Flag
+    IEC0bits.IC2IE = 1; // Enable IC2 interrupt
         __builtin_write_OSCCONL(OSCCON & 0xbf); // unlock PPS
     RPINR7bits.IC2R = 5;   // Use pin RP5 for IC2
     __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
@@ -423,33 +424,33 @@ void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void){
  * Output:          None
  */
 void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
-    set++;          // Increment set, so the next mode is used.
-    if(set == 9)    // Reset set to 1 if previous mode was the last.       
-        set = 1;
+    run++;          // Increment run, so the next mode is used.
+    if(run == 9)    // Reset run to 1 if previous mode was the last.       
+        run = 1;
     
     //Displaying the setting mode
-    if(set == 1){
+    if(run == 1){
         LCD_SpecialPrint("SETTING ", "1:1_step");
     }
-    if(set == 2){
+    if(run == 2){
         LCD_SpecialPrint("SETTING ", "1/2_step");
     }
-    if(set == 3){
+    if(run == 3){
         LCD_SpecialPrint("SETTING ", "Qtr_step");
     }
-    if(set == 4){
+    if(run == 4){
         LCD_SpecialPrint("SETTING ", "8th_step");
     }
-    if(set == 5){
+    if(run == 5){
         LCD_SpecialPrint("SETTING ", "16thStep");
     }  
-    if(set == 6){
+    if(run == 6){
         LCD_SpecialPrint("SETTING ", "32ndStep");
     } 
-    if(set == 7){
+    if(run == 7){
         LCD_SpecialPrint("SETTING ", "FncyStep");
     }  
-    if(set == 8){
+    if(run == 8){
         LCD_SpecialPrint("SETTING ", "ALL_Step");
     } 
 

@@ -13,7 +13,6 @@ extern "C" {
 #endif
 
     //Globals for IC2 motor control
-    extern unsigned int set;
     extern unsigned int run;
     
     //DRV8825 Library Functions
