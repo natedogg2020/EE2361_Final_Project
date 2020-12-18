@@ -39,7 +39,7 @@ void setup(void){
 
 int main(void) {
     setup();        // Setup all peripherals
-    run = 8;        // Initially Start with running with all operations
+    run = 7;        // Initially Start with running with all operations
     int dir = 0;    // Set direction of stepper motor (1 or 0/HIGH or LOW)
     msecs(50);      // Wait 50 milliseconds to allow DRV8825 to catch-up initially
     
@@ -61,7 +61,7 @@ int main(void) {
         }else if (run == 3){
             LCD_SpecialPrint("1:4_Step", "RUNNING ");   // DSSU
             // Step 800 steps (1 rotation) with a ~5,002.5us period per step using 1:4 microstepping.
-            quarter_Step(dir, 4 *200, 2500);
+            quarter_Step(dir, 4*200, 2500);
             LCD_SpecialPrint("1:4_Step", "FINISHED");   // DSSU
             msecs(500);     // wait half a second to allow user to read LCD message
         }else if (run == 4){
@@ -73,13 +73,13 @@ int main(void) {
         }else if (run == 5){
             LCD_SpecialPrint("16thStep", "RUNNING ");   // DSSU
             // Step 3,200 steps (1 rotation) with a ~1,602.5us period per step using 1:16 microstepping.
-            sixteenth_Step(dir, 16 *200, 800);
+            sixteenth_Step(dir, 16*200, 800);
             LCD_SpecialPrint("16thStep", "FINISHED");   // DSSU
             msecs(500);     // wait half a second to allow user to read LCD message
         }else if (run == 6){
             LCD_SpecialPrint("32ndStep", "RUNNING ");   // DSSU
             // Step 6,400 steps (1 rotation) with a ~302.5us period per step using 1:32 microstepping.
-            thirtieth_Step(dir, 32 *200, 300);
+            thirtieth_Step(dir, 32*200, 300);
             LCD_SpecialPrint("32ndStep","FINISHED");    // DSSU
             msecs(500);     // wait half a second to allow user to read LCD message
         }else if (run == 7){
@@ -91,7 +91,7 @@ int main(void) {
              * Max Speed period is ~36.5us (IP of 17), and End Speed is 602.5us
              * (IP of 300).
              */
-            fancy_Step(dir, (long long)5*32*200, 5, 1, 2, 2*32, 250 ,17, 300);
+            fancy_Step(dir, (long long)11*16*200,5, 1, 5, 2*16, 250 ,25, 300);
             LCD_SpecialPrint("FncyStep","FINISHED");    // DSSU
             msecs(500);     // wait half a second to allow user to read LCD message
         }else{  //run == 8

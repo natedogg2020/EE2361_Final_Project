@@ -415,7 +415,7 @@ void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void){
 }
 
 
-/* Function:        _IC1Interrupt 
+/* Function:        _IC2Interrupt 
  * Original Author: Hai Nguyen
  * Description:     _IC2Interrupt is utilized to change the working mode of the
  *                  DRV8825 by watching for a button press (active high) on the 
@@ -453,9 +453,10 @@ void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
     if(run == 8){
         LCD_SpecialPrint("SETTING ", "ALL_Step");
     } 
-
+    msecs(20);
+    _IC2IF = 0;  //Reset Flag after 20 msecs to help debounce the button
     msecs(1000);   //Wait 1_sec for setting is complete
-    _IC2IF = 0;  //Reset Flag at the end to help debounce the button
+    
 }
 
 
