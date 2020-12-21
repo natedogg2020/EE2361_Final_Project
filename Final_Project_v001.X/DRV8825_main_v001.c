@@ -191,7 +191,7 @@ void full_Step(int dir, int steps, int delay){
 
 /* Function:        half_Step
  * Original Author: Hai Nguyen
- * Description:     
+ * Description:     Drives the DRV8825 driver with 1:2 stepping
  * Parameters:
  *      dir     : Determines the direction of rotation (1 for CW, 0 for CCW)
  *      steps   : Number of steps to rotate
@@ -382,7 +382,7 @@ void fancy_Step(int dir, long long steps, unsigned char mode, int accel, int dec
 /* Function:        _IC1Interrupt 
  * Original Author: Nathaniel McKelvey
  * Description:     _IC1Interrupt is utilized to halt the DRV8825 if the MAX_FAULTS
- *                  is reached. If the MAX_FAULTS isn't reached, the DRV8825 is
+ *                  is reached on the RP4 pin. If the MAX_FAULTS isn't reached, the DRV8825 is
  *                  reset and resumes normal operation.
  * Parameters:      None
  * Output:          None
@@ -453,8 +453,8 @@ void __attribute__((__interrupt__, __auto_psv__)) _IC2Interrupt(void) {
     if(run == 8){
         LCD_SpecialPrint("SETTING ", "ALL_Step");
     } 
-    msecs(20);
-    _IC2IF = 0;  //Reset Flag after 20 msecs to help debounce the button
+    msecs(500);
+    _IC2IF = 0;  //Reset Flag after 500 msecs to help debounce the button
     msecs(1000);   //Wait 1_sec for setting is complete
     
 }

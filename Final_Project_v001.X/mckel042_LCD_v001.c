@@ -13,6 +13,13 @@
 #include "xc.h"
 #include "mckel042_LCD_v001.h"
 
+/* Function:        LCD_Setup 
+ * Description:     This is the setup function to initialize all required outputs
+ *                  and anything else necessary for the LCD library to have 
+ *                  full functionality.
+ * Parameters:      None
+ * Output:          None
+ */ 
 void LCD_Setup(){
     //LCD Initialization
     I2C2CONbits.I2CEN = 0;      // Disable I2C2
@@ -22,6 +29,13 @@ void LCD_Setup(){
     lcd_init();
     lcd_setCursor(0, 0);
 }
+
+/* Function:        lcd_cmd 
+ * Description:     This function is used to send LCD commands to the LCD
+ * Parameters:      
+ *      command : 8-bit command to send to display
+ * Output:          None
+ */ 
 void lcd_cmd(unsigned char command)
 {
     I2C2CONbits.SEN = 1;        // Begin Start sequence
@@ -42,6 +56,12 @@ void lcd_cmd(unsigned char command)
     while(I2C2CONbits.PEN);
 }
 
+/* Function:        lcd_init 
+ * Description:     This is the required initialization sequence to initially
+ *                  start the LCD
+ * Parameters:      None
+ * Output:          None
+ */ 
 void lcd_init(void)
 {
     msecs(250);
@@ -65,6 +85,17 @@ void lcd_init(void)
     msecs(20);
 }
 
+/* Function:        lcd_setCursor 
+ * Description:     This function allows for setting the cursor to a specific
+ *                  character position on a 40x2 character space (note the 
+ *                  display can only show 8x2 characters at a time. move() must
+ *                  utilized to make the remaining characters show across 
+ *                  the display
+ * Parameters:      
+ *          x   :   The x-position for the character cursor. Range = [0, 39]
+ *          y   :   The y-position for the character cursor. can be 0 or 1.
+ * Output:          None
+ */ 
 void lcd_setCursor(char x, char y)
 {
     int i = 0;
@@ -77,6 +108,13 @@ void lcd_setCursor(char x, char y)
     }
 }
 
+/* Function:        lcd_printChar 
+ * Description:     This function prints a single character to the LCD at the
+ *                  pre-set cursor position.
+ * Parameters:      
+ *          myChar  : ASCII character to be displayed to the LCD  
+ * Output:          None
+ */ 
 void lcd_printChar(char myChar)
 {
     I2C2CONbits.SEN = 1;        // Begin Start sequence
@@ -97,6 +135,13 @@ void lcd_printChar(char myChar)
     while(I2C2CONbits.PEN);
 }
 
+/* Function:        lcd_printStr 
+ * Description:     This function prints a character array to the LCD at the
+ *                  pre-set cursor position.
+ * Parameters:      
+ *          s[]  :  ASCII character array to be displayed to the LCD  
+ * Output:          None
+ */ 
 void lcd_printStr(const char s[])
 {
     int len = strlen(s);
@@ -130,9 +175,13 @@ void lcd_printStr(const char s[])
 
 }
 
-// Shifts characters to the left across display
+/* Function:        move 
+ * Description:     Shifts characters to the left across display.
+ * Parameters:      None 
+ * Output:          None
+ */ 
 void move(void) {
-    lcd_cmd(0b00011000);
+    lcd_cmd(0b00011000);    // Shifts characters to the left across display.
 }
 
 

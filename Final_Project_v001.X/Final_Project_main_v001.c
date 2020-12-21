@@ -39,7 +39,7 @@ void setup(void){
 
 int main(void) {
     setup();        // Setup all peripherals
-    run = 7;        // Initially Start with running with all operations
+//    run = 8;        // Initially Start with running with all operations
     int dir = 0;    // Set direction of stepper motor (1 or 0/HIGH or LOW)
     msecs(50);      // Wait 50 milliseconds to allow DRV8825 to catch-up initially
     

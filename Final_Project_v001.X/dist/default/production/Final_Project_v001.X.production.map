@@ -68,9 +68,9 @@ Default Scalar Model: Small
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x200               0x1de           0x2cd  (717)
-.const                       0x3de               0x106           0x189  (393)
-.text                        0x4e4               0x80a           0xc0f  (3087)
+.text                        0x200               0x1e2           0x2d3  (723)
+.const                       0x3e2               0x106           0x189  (393)
+.text                        0x4e8               0x806           0xc09  (3081)
 .dinit                       0xcee                0x12            0x1b  (27)
 
                  Total "program" memory used (bytes):         0x1080  (4224) 6%
@@ -118,22 +118,22 @@ External Symbols in Program Memory (by address):
                   0x000252                  __data_init
                   0x0002c8                  __IC1Interrupt
                   0x000334                  __IC2Interrupt
-                  0x0003cc                  __DefaultInterrupt
-                  0x0003d2                  _strlen
-                  0x0004e4                  _DRV8825_Setup
-                  0x0005b0                  _LCD_SpecialPrint
-                  0x0005ce                  _msecs
-                  0x0005f6                  _delay_us
-                  0x000618                  _setMode
-                  0x00066c                  _full_Step
-                  0x0006aa                  _half_Step
-                  0x0006e8                  _quarter_Step
-                  0x000726                  _eighth_Step
-                  0x000764                  _sixteenth_Step
-                  0x0007a2                  _thirtieth_Step
-                  0x0007e0                  _fancy_Step
-                  0x00090e                  _setup
-                  0x000918                  _main
+                  0x0003d0                  __DefaultInterrupt
+                  0x0003d6                  _strlen
+                  0x0004e8                  _DRV8825_Setup
+                  0x0005b4                  _LCD_SpecialPrint
+                  0x0005d2                  _msecs
+                  0x0005fa                  _delay_us
+                  0x00061c                  _setMode
+                  0x000670                  _full_Step
+                  0x0006ae                  _half_Step
+                  0x0006ec                  _quarter_Step
+                  0x00072a                  _eighth_Step
+                  0x000768                  _sixteenth_Step
+                  0x0007a6                  _thirtieth_Step
+                  0x0007e4                  _fancy_Step
+                  0x000912                  _setup
+                  0x00091c                  _main
                   0x000b0c                  _LCD_Setup
                   0x000b24                  _lcd_cmd
                   0x000b72                  _lcd_init
@@ -144,35 +144,35 @@ External Symbols in Program Memory (by address):
 
 External Symbols in Program Memory (by name):
 
-                  0x0004e4                  _DRV8825_Setup
+                  0x0004e8                  _DRV8825_Setup
                   0x000b0c                  _LCD_Setup
-                  0x0005b0                  _LCD_SpecialPrint
-                  0x0003cc                  __DefaultInterrupt
+                  0x0005b4                  _LCD_SpecialPrint
+                  0x0003d0                  __DefaultInterrupt
                   0x0002c8                  __IC1Interrupt
                   0x000334                  __IC2Interrupt
                   0x000252                  __data_init
                   0x000252                  __data_init_standard
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
-                  0x0005f6                  _delay_us
-                  0x000726                  _eighth_Step
-                  0x0007e0                  _fancy_Step
-                  0x00066c                  _full_Step
-                  0x0006aa                  _half_Step
+                  0x0005fa                  _delay_us
+                  0x00072a                  _eighth_Step
+                  0x0007e4                  _fancy_Step
+                  0x000670                  _full_Step
+                  0x0006ae                  _half_Step
                   0x000b24                  _lcd_cmd
                   0x000b72                  _lcd_init
                   0x000bfa                  _lcd_printChar
                   0x000c4a                  _lcd_printStr
                   0x000bc4                  _lcd_setCursor
-                  0x000918                  _main
+                  0x00091c                  _main
                   0x000ce4                  _move
-                  0x0005ce                  _msecs
-                  0x0006e8                  _quarter_Step
-                  0x000618                  _setMode
-                  0x00090e                  _setup
-                  0x000764                  _sixteenth_Step
-                  0x0003d2                  _strlen
-                  0x0007a2                  _thirtieth_Step
+                  0x0005d2                  _msecs
+                  0x0006ec                  _quarter_Step
+                  0x00061c                  _setMode
+                  0x000912                  _setup
+                  0x000768                  _sixteenth_Step
+                  0x0003d6                  _strlen
+                  0x0007a6                  _thirtieth_Step
 
 Memory Configuration
 
@@ -211,7 +211,7 @@ LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000200        0x1de
+.text             0x000200        0x1e2
  *(.init)
  .init            0x000200         0x4c c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_standard.o)
                   0x000200                  __resetPRI
@@ -223,21 +223,21 @@ LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
  *(.user_init)
  *(.handle)
  *(.isr*)
- .isr.text        0x0002c8        0x104 build/default/production/DRV8825_main_v001.o
+ .isr.text        0x0002c8        0x108 build/default/production/DRV8825_main_v001.o
                   0x0002c8                  __IC1Interrupt
                   0x000334                  __IC2Interrupt
- .isr             0x0003cc          0x4 default_isr
-                  0x0003cc                  __DefaultInterrupt
+ .isr             0x0003d0          0x4 default_isr
+                  0x0003d0                  __DefaultInterrupt
  *(.libc)
  *(.libm)
  *(.libdsp)
  *(.lib*)
  .libpic30_crt_start_mode
-                  0x0003d0          0x2 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt_start_mode_normal.Leo)
-                  0x0003d0                  __crt_start_mode
-                  0x0003d0                  __crt_start_mode_normal
- .libc.strlen     0x0003d2          0xc c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-c-elf.a(strlen.XX_eo)
-                  0x0003d2                  _strlen
+                  0x0003d4          0x2 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt_start_mode_normal.Leo)
+                  0x0003d4                  __crt_start_mode
+                  0x0003d4                  __crt_start_mode_normal
+ .libc.strlen     0x0003d6          0xc c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-c-elf.a(strlen.XX_eo)
+                  0x0003d6                  _strlen
 
 usercode
  *(usercode)
@@ -264,11 +264,11 @@ __CONFIG1
  .debug_abbrev    0x0001ef         0x85 build/default/production/Final_Project_main_v001.o
  .debug_abbrev    0x000274        0x112 build/default/production/mckel042_LCD_v001.o
 
-.debug_line       0x000000        0x440
+.debug_line       0x000000        0x44a
  *(.debug_line)
- .debug_line      0x000000        0x22a build/default/production/DRV8825_main_v001.o
- .debug_line      0x00022a         0xa8 build/default/production/Final_Project_main_v001.o
- .debug_line      0x0002d2        0x16e build/default/production/mckel042_LCD_v001.o
+ .debug_line      0x000000        0x22b build/default/production/DRV8825_main_v001.o
+ .debug_line      0x00022b         0xa7 build/default/production/Final_Project_main_v001.o
+ .debug_line      0x0002d2        0x178 build/default/production/mckel042_LCD_v001.o
 
 .debug_frame      0x000000        0x310
  *(.debug_frame)
@@ -943,27 +943,27 @@ __c30_signature
 .config_IESO      0x00abfc          0x2
  .config_IESO     0x00abfc          0x2 build/default/production/Final_Project_main_v001.o
 
-.const              0x83de        0x106 load address 0x0003de  
- .const             0x83de         0x9a build/default/production/DRV8825_main_v001.o
- .const             0x8478         0x6c build/default/production/Final_Project_main_v001.o
+.const              0x83e2        0x106 load address 0x0003e2  
+ .const             0x83e2         0x9a build/default/production/DRV8825_main_v001.o
+ .const             0x847c         0x6c build/default/production/Final_Project_main_v001.o
 
-.text             0x0004e4        0x80a
- .text            0x0004e4        0x42a build/default/production/DRV8825_main_v001.o
-                  0x0004e4                  _DRV8825_Setup
-                  0x0005b0                  _LCD_SpecialPrint
-                  0x0005ce                  _msecs
-                  0x0005f6                  _delay_us
-                  0x000618                  _setMode
-                  0x00066c                  _full_Step
-                  0x0006aa                  _half_Step
-                  0x0006e8                  _quarter_Step
-                  0x000726                  _eighth_Step
-                  0x000764                  _sixteenth_Step
-                  0x0007a2                  _thirtieth_Step
-                  0x0007e0                  _fancy_Step
- .text            0x00090e        0x1fe build/default/production/Final_Project_main_v001.o
-                  0x00090e                  _setup
-                  0x000918                  _main
+.text             0x0004e8        0x806
+ .text            0x0004e8        0x42a build/default/production/DRV8825_main_v001.o
+                  0x0004e8                  _DRV8825_Setup
+                  0x0005b4                  _LCD_SpecialPrint
+                  0x0005d2                  _msecs
+                  0x0005fa                  _delay_us
+                  0x00061c                  _setMode
+                  0x000670                  _full_Step
+                  0x0006ae                  _half_Step
+                  0x0006ec                  _quarter_Step
+                  0x00072a                  _eighth_Step
+                  0x000768                  _sixteenth_Step
+                  0x0007a6                  _thirtieth_Step
+                  0x0007e4                  _fancy_Step
+ .text            0x000912        0x1fa build/default/production/Final_Project_main_v001.o
+                  0x000912                  _setup
+                  0x00091c                  _main
  .text            0x000b0c        0x1e2 build/default/production/mckel042_LCD_v001.o
                   0x000b0c                  _LCD_Setup
                   0x000b24                  _lcd_cmd
